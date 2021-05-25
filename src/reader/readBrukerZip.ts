@@ -1,11 +1,11 @@
-import JSZip from 'jszip';
+import type { InputType } from 'jszip';
 import { fromBruker } from 'nmr-parser';
 
 import { formatSpectrum1D } from '../formatSpectrum1D';
-import { ReadZipOptions } from '../types/readZipOptions';
+import { Options } from '../types/Options';
 import { getData } from '../utility';
 
-export async function readBrukerZip(zip: JSZip.InputType, options: Partial<ReadZipOptions>) {
+export async function readBrukerZip(zip: InputType, options: Partial<Options>) {
   const { shiftX } = options;
   const { dependentVariables, info, meta, source } = await fromBruker(zip);
 

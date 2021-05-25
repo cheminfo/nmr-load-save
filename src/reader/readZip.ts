@@ -1,27 +1,27 @@
 import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
-import JSZip from 'jszip';
+const JSZip = require('jszip');
 
-import { getFileExtension, loadFilesFromZip } from '../fileUtility';
+import { getFileExtension, loadFiles } from '../fileUtility';
 import { formatSpectrum1D } from '../formatSpectrum1D';
 import { formatSpectrum2D } from '../formatSpectrum2D';
-import { LoadFilesFromZip } from '../types/LoadFilesFromZip';
+import { LoadedFiles } from '../types/LoadedFiles';
 import { Output } from '../types/Output';
-import { ReadZipOptions } from '../types/ReadZipOptions';
+import { Options } from '../types/Options';
 import { FILES_TYPES } from '../utility';
 
 import { readBrukerZip } from './readBrukerZip';
 import { readByExtension } from './readByExtension';
 import { readText } from './readText';
 
-type InputZip = Uint8Array | string;
+import type { InputType } from 'jszip';
 type Spectrum = Array<Spectrum1D | Spectrum2D>;
 
 const MONO_DIMENSIONAL = 1;
 const BI_DIMENSIONAL = 2;
 
 export async function readZip(
-  zipFile: InputZip,
-  options: Partial<ReadZipOptions> = {},
+  zipFile: InputType,
+  options: Partial<Options> = {},
 ): Promise<Output> {
   const { base64 } = options;
   const jszip = new JSZip();
@@ -53,7 +53,7 @@ export async function readZip(
       const selectedFilesByExtensions = zip.filter(
         (file) => getFileExtension(file.name) === extension,
       );
-      let files: LoadFilesFromZip[] = await loadFilesFromZip(
+      let files: LoadedFiles[] = await loadFiles(
         selectedFilesByExtensions,
         {
           asBuffer: extension === FILES_TYPES.MOL ? false : true,

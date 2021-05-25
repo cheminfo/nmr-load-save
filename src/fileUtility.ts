@@ -1,17 +1,17 @@
-import JSZip from 'jszip';
+const JSZip = require('jszip');
 
-import { LoadFilesFromZip } from './types/LoadFilesFromZip';
+import { LoadedFiles } from './types/LoadedFiles';
 import { LoadFilesFromZipOptions } from './types/LoadFilesFromZipOptions';
 
 export function getFileExtension(name: string): string {
   return name.replace(/^.*\./, '').toLowerCase();
 }
 
-export async function loadFilesFromZip(
+export async function loadFiles(
   files: JSZip.JSZipObject[],
   options: LoadFilesFromZipOptions = {},
-): Promise<LoadFilesFromZip[]> {
-  const result: LoadFilesFromZip[] = [];
+): Promise<LoadedFiles[]> {
+  const result: LoadedFiles[] = [];
   for (const file of files) {
     try {
       const binary = await file.async(options.asBuffer ? 'uint8array' : 'text');

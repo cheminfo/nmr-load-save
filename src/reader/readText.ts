@@ -1,7 +1,7 @@
 import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import { fromJcamp } from 'nmr-parser';
 
-import { ReadTextOptions } from '../types/ReadTextOptions';
+import { Options } from '../types/Options';
 
 interface Molecule {
   molfile: string;
@@ -9,7 +9,7 @@ interface Molecule {
 export type ReadTextOutput = Array<Spectrum1D | Spectrum2D> | Molecule;
 export type Text = ArrayBuffer | string;
 
-export function readText(text: Text, options: ReadTextOptions = {}): ReadTextOutput {
+export function readText(text: Text, options: Partial<Options> = {}): ReadTextOutput {
   const inputString = typeof text === 'object' ? text.toString() : text.slice();
   if (inputString.includes('##title')) {
     return fromJcamp(inputString, {

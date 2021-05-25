@@ -1,44 +1,54 @@
 import { Data1D } from 'cheminfo-types';
 import { fromJEOL } from 'nmr-parser';
+import { Options } from '../types/Options';
 
-export function readJDF(jdf: Uint8Array, options = {}) {
+export function readJDF(jdf: Uint8Array, options: Options) {
   const { name = '' } = options;
   let converted = fromJEOL(jdf, {});
   let info = converted.description;
   let metadata = info.metadata;
-  delete info.metadata;
-  info.acquisitionMode = 0;
-  info.experiment = info.dimension === 1 ? '1d' : '2d';
-  info.type = 'NMR SPECTRUM';
-  info.nucleus = info.nucleus[0];
-  info.numberOfPoints = info.numberOfPoints[0];
-  info.acquisitionTime = info.acquisitionTime[0];
+  // delete info.metadata;
+  const acquisitionMode = 0;
+  const experiment = info.dimension === 1 ? '1d' : '2d';
+  const type = 'NMR SPECTRUM';
+  const nucleus = info.nucleus[0];
+  const numberOfPoints = info.numberOfPoints[0];
+  const acquisitionTime = info.acquisitionTime[0];
 
-  info.baseFrequency = info.baseFrequency[0];
-  info.frequencyOffset = info.frequencyOffset[0];
+  const baseFrequency = info.baseFrequency[0];
+  const frequencyOffset = info.frequencyOffset[0];
 
-  info.spectralWidthClipped = converted.application.spectralWidthClipped;
+  const spectralWidthClipped = converted.application.spectralWidthClipped;
 
   let spectra = [];
   if (info.dimension === 1) {
     if (converted.dependentVariables) {
-      spectra.push(
-        formatCSD(converted),
-      );
+      spectra.push(formatCSD(converted));
     }
   }
 
   return {
     data: spectra,
-    info,
+    info: {
+      ...info,
+      acquisitionMode,
+      experiment,
+      type,
+      nucleus,
+      numberOfPoints,
+      acquisitionTime,
+      baseFrequency,
+      frequencyOffset,
+      spectralWidthClipped,
+    },
     meta: metadata,
     source: {
       name,
       extension: 'jdf',
       binary: jdf,
     },
-    ...options
-  }
+    ...options,
+  };
 }
 
 function formatCSD(result: any): Data1D {

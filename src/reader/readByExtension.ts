@@ -1,12 +1,13 @@
 import { Output } from '../types/Output';
-
-import { getFileExtension } from './fileUtility';
+import { Options } from '../types/Options';
+import { LoadedFiles } from '../types/LoadedFiles';
+import { getFileExtension } from '../fileUtility';
 import { readZip } from './readZip';
-import { readJDF } from './reader/readJDF';
-import { readText } from './reader/readText';
-import { FILES_TYPES } from './utility';
+import { readJDF } from './readJDF';
+import { readText } from './readText';
+import { FILES_TYPES } from '../utility';
 
-export async function readByExtension(files, options) {
+export async function readByExtension(files: LoadedFiles[], options: Partial<Options>) {
   let result: Output = { spectra: [], molecules: [] };
   for (let file of files) {
     const extension = getFileExtension(file.name);

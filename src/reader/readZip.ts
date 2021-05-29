@@ -1,26 +1,22 @@
-import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
+// import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
+import { Spectrum1D } from '../../types/Spectrum1D';
+import { Spectrum2D } from '../../types/Spectrum2D';
 const JSZip = require('jszip');
 
 import { getFileExtension, loadFiles } from '../fileUtility';
-import { formatSpectrum1D } from '../formatSpectrum1D';
-import { formatSpectrum2D } from '../formatSpectrum2D';
-import { LoadedFiles } from '../types/LoadedFiles';
-import { Output } from '../types/Output';
-import { Options } from '../types/Options';
+import { formatSpectra } from '../utils/formatSpectra';
+import { LoadedFiles } from '../../types/LoadedFiles';
+import { Output } from '../../types/Output';
+import { Options } from '../../types/Options';
 import { FILES_TYPES } from '../utility';
 
 import { readBrukerZip } from './readBrukerZip';
 import { readByExtension } from './readByExtension';
-import { readText } from './readText';
 
 import type { InputType } from 'jszip';
-type Spectrum = Array<Spectrum1D | Spectrum2D>;
-
-const MONO_DIMENSIONAL = 1;
-const BI_DIMENSIONAL = 2;
 
 export async function readZip(
-  zipFile: InputType,
+  zipFile: Partial<InputType>,
   options: Partial<Options> = {},
 ): Promise<Output> {
   const { base64 } = options;
@@ -42,8 +38,8 @@ export async function readZip(
   );
 
   if (hasBruker) {
-    let spectrum: Spectrum = await readBrukerZip(zipFile, options);
-    if (spectrum) result.spectra.push(...spectrum);
+    let partialResult: Output = await readBrukerZip(zipFile, options);
+    if (partialResult.spectra) result.spectra.push(...partialResult.spectra);
   }
 
   let hasOthers = uniqueFileExtensions.some((ex) => FILES_TYPES[ex]);
@@ -51,7 +47,7 @@ export async function readZip(
   if (hasOthers) {
     for (let extension of uniqueFileExtensions) {
       const selectedFilesByExtensions = zip.filter(
-        (file) => getFileExtension(file.name) === extension,
+        (file: any) => getFileExtension(file.name) === extension,
       );
       let files: LoadedFiles[] = await loadFiles(
         selectedFilesByExtensions,
@@ -64,22 +60,5 @@ export async function readZip(
       result.molecules.push(...partialResult.molecules);
     }
   }
-  return formatSpectrum(result);
-}
-
-function formatSpectrum(input: Output): any {
-  const { spectra: inputSpectra = [], molecules } = input;
-  let spectra = [];
-  for (let spectrum of inputSpectra) {
-    const { info } = spectrum;
-    switch (info.dimension) {
-      case 'MONO_DIMENSIONAL':
-        spectra.push(formatSpectrum1D(spectrum));
-        break;
-      case 'BI_DIMENSIONAL':
-        spectra.push(formatSpectrum2D(spectrum));
-        break;
-    }
-  }
-  return { molecules, spectra };
+  return formatSpectra(result);
 }

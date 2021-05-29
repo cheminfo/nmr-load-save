@@ -1,19 +1,19 @@
-import { Spectrum2D } from 'cheminfo-type';
+import { Spectrum2D } from '../../types/Spectrum2D';
 
-import generateID from './utils/generateID';
+import generateID from './generateID';
 
-export function formatSpectrum2D(options: any) {
+export function formatSpectrum2D(options: any): Spectrum2D {
   const {
     id = generateID(),
     meta = {},
-    data = {},
+    dependentVariables = [],
     info = {},
     source = {},
     filters = [],
     zones = [],
   } = options;
 
-  const spectrum: Spectrum2D = { id, meta, filters };
+  const spectrum: any = { id, meta, filters };
 
   spectrum.source = {
     ...{
@@ -37,6 +37,9 @@ export function formatSpectrum2D(options: any) {
   };
 
   spectrum.originalInfo = spectrum.info;
+
+  let data = dependentVariables[0].components;
+  
   spectrum.data = {
     ...{
       z: [],

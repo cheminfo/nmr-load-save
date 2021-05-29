@@ -1,6 +1,8 @@
-import { Data1D, Spectrum1D } from 'cheminfo-types';
+// import { Spectrum1D } from 'cheminfo-types';
+import { Spectrum1D } from '../../types/Spectrum1D';
+import { getData } from '../utility';
 
-export function formatSpectrum1D(options: any) {
+export function formatSpectrum1D(options: any): Spectrum1D {
   const {
     shiftX = 0,
     meta,
@@ -8,9 +10,9 @@ export function formatSpectrum1D(options: any) {
     filters = [],
     info = {},
     source = {},
-    data = {},
+    dependentVariables = [],
   } = options;
-  const spectrum: Spectrum1D = { shiftX, meta, filters };
+  let spectrum: any = { shiftX, meta, filters };
 
   spectrum.source = {
     ...{
@@ -24,17 +26,12 @@ export function formatSpectrum1D(options: any) {
     ...source,
   };
 
-  spectrum.info = {
-    ...{
-      nucleus: '1H', // 1H, 13C, 19F, ...
-      isFid: false,
-      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
-      dimension: 1,
-    },
-    ...info,
-  };
-
   spectrum.originalInfo = spectrum.info;
+
+  let data = getData(dependentVariables[0].components);
+
+  if (data.im) info.isComplex = true;
+  if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
 
   spectrum.data = {
     ...{
@@ -44,6 +41,16 @@ export function formatSpectrum1D(options: any) {
       y: [],
     },
     ...data,
+  };
+
+  spectrum.info = {
+    ...{
+      nucleus: '1H', // 1H, 13C, 19F, ...
+      isFid: false,
+      isComplex: false, // if isComplex is true that mean it contains real/ imaginary  x set, if not hid re/im button .
+      dimension: 1,
+    },
+    ...info,
   };
 
   spectrum.originalData = spectrum.data;
@@ -60,6 +67,7 @@ export function formatSpectrum1D(options: any) {
     ...options.ranges,
   };
 
-  (spectrum.data ).y = spectrum.data.re;
+  spectrum.data.y = spectrum.data.re;
+
   return spectrum;
 }

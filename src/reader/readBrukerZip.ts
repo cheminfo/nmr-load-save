@@ -1,18 +1,21 @@
 import type { InputType } from 'jszip';
 import { fromBruker } from 'nmr-parser';
+import { formatSpectra } from '../utils/formatSpectra';
+import { Output } from '../../types/Output';
+import { Options } from '../../types/Options';
 
-import { formatSpectrum1D } from '../formatSpectrum1D';
-import { Options } from '../types/Options';
-import { getData } from '../utility';
 
-export async function readBrukerZip(zip: InputType, options: Partial<Options>) {
+export async function readBrukerZip(
+  zip: Partial<InputType>,
+  options: Partial<Options>,
+): Promise<Output> {
   const { shiftX } = options;
-  const { dependentVariables, info, meta, source } = await fromBruker(zip);
+  let output: any = { spectra: [], molecules: [] };
 
-  let data = getData(dependentVariables[0].components);
-
-  if (data.im) info.isComplex = true;
-  if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
-
-  return formatSpectrum1D({ shiftX, data, meta, info, source });
+  const entries = await fromBruker(zip, options);
+  for (let entry of entries) {
+    const { dependentVariables, info, meta, source } = entry;
+    output.spectra.push({ shiftX, dependentVariables, meta, info, source });
+  }
+  return formatSpectra(output);
 }

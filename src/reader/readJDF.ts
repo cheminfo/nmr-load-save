@@ -1,10 +1,10 @@
-import { Data1D } from 'cheminfo-types';
+import { Data1D } from '../../types/Data1D';
 import { fromJEOL } from 'nmr-parser';
-import { Options } from '../types/Options';
+import { Options } from '../../types/Options';
 
 export function readJDF(jdf: Uint8Array, options: Options) {
   const { name = '' } = options;
-  let converted = fromJEOL(jdf, {});
+  let converted = fromJEOL(jdf);
   let info = converted.description;
   let metadata = info.metadata;
   // delete info.metadata;
@@ -30,7 +30,6 @@ export function readJDF(jdf: Uint8Array, options: Options) {
   return {
     data: spectra,
     info: {
-      ...info,
       acquisitionMode,
       experiment,
       type,
@@ -69,7 +68,7 @@ function formatCSD(result: any): Data1D {
     im.push(buffer[i]);
   }
 
-  let data: Data1D = {};
+  let data: any = {};
   let i, x0;
   switch (quantityName) {
     case 'frequency':

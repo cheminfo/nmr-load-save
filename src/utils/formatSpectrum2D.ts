@@ -39,7 +39,7 @@ export function formatSpectrum2D(options: any): Spectrum2D {
   spectrum.originalInfo = spectrum.info;
 
   let data = dependentVariables[0].components;
-  
+
   spectrum.data = {
     ...{
       z: [],

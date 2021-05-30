@@ -1,6 +1,4 @@
 declare module 'nmr-parser' {
-  import type { InputType } from 'jszip';
-
   interface Options {
     base64?: boolean;
     shiftX?: number;
@@ -9,11 +7,11 @@ declare module 'nmr-parser' {
   }
 
   function fromBruker(
-    zipFile: InputType,
+    zipFile: Uint8Array | string,
     options: Partial<Options>,
   ): Array<any>;
   
-  function fromJcamp(
+  function fromJCAMP(
     buffer: Uint8Array,
     options?: any, 
   ): Array<any>;

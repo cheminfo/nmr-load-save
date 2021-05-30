@@ -1,12 +1,12 @@
-import type { InputType } from 'jszip';
 import { fromBruker } from 'nmr-parser';
-import { formatSpectra } from '../utils/formatSpectra';
-import { Output } from '../../types/Output';
+
 import { Options } from '../../types/Options';
+import { Output } from '../../types/Output';
+import { formatSpectra } from '../utils/formatSpectra';
 
 
 export async function readBrukerZip(
-  zip: Partial<InputType>,
+  zip: Uint8Array | string,
   options: Partial<Options>,
 ): Promise<Output> {
   const { shiftX } = options;
@@ -14,6 +14,7 @@ export async function readBrukerZip(
 
   const entries = await fromBruker(zip, options);
   for (let entry of entries) {
+    console.log('entri', Object.keys(entry))
     const { dependentVariables, info, meta, source } = entry;
     output.spectra.push({ shiftX, dependentVariables, meta, info, source });
   }

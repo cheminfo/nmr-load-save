@@ -3,6 +3,7 @@ import { Spectrum1D } from '../../types/Spectrum1D';
 import { getData } from '../utility';
 
 export function formatSpectrum1D(options: any): Spectrum1D {
+  console.log(Object.keys(options));
   const {
     shiftX = 0,
     meta,

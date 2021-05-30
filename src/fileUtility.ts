@@ -1,10 +1,13 @@
 import type { JSZipObject } from 'jszip';
-import { LoadedFiles } from '../types/LoadedFiles';
+
 import { LoadFilesFromZipOptions } from '../types/LoadFilesFromZipOptions';
+import { LoadedFiles } from '../types/LoadedFiles';
 
 export function getFileExtension(name: string): string {
   return name.replace(/^.*\./, '').toLowerCase();
 }
+
+type Bynary = Uint8Array | string;
 
 export async function loadFiles(
   files: JSZipObject[],
@@ -13,7 +16,7 @@ export async function loadFiles(
   const result: LoadedFiles[] = [];
   for (const file of files) {
     try {
-      const binary: Uint8Array = await file.async('uint8array');
+      const binary: Bynary = await file.async(options.asBuffer ? 'uint8array' : 'text');
       const name = getFileName(file.name);
       const extension = getFileExtension(file.name);
       result.push({ binary, name, extension });

@@ -1,11 +1,12 @@
-import { Output } from '../../types/Output';
-import { Options } from '../../types/Options';
 import { LoadedFiles } from '../../types/LoadedFiles';
+import { Options } from '../../types/Options';
+import { Output } from '../../types/Output';
 import { getFileExtension } from '../fileUtility';
+import { FILES_TYPES } from '../utility';
+
+import { readJcamp } from './readJcamp';
 import { readZip } from './readZip';
 // import { readJDF } from './readJDF';
-import { readText } from './readText';
-import { FILES_TYPES } from '../utility';
 
 export async function readByExtension(
   files: LoadedFiles[],
@@ -27,17 +28,17 @@ async function process(
   const { extension = getFileExtension(file.name) } = file;
   switch (extension) {
     case FILES_TYPES.MOL:
-      return readText(file.binary);
+      return { molecules: [{ molfile: file.binary }], spectra: []};
     case FILES_TYPES.JDX:
     case FILES_TYPES.DX:
-      return readText(file.binary, options);
+      return readJcamp(file.binary, options);
     // case FILES_TYPES.JDF:
     //   if (typeof file.binary !== 'string') {
     //     return { spectra: [readJDF(file.binary, { file.name, ...options })] };
     //   }
     //   break;
     case FILES_TYPES.ZIP:
-      return await readZip(file.binary, options);
+      return readZip(file.binary, options);
     default:
       throw new Error(`The extension ${extension} is not supported`);
   }

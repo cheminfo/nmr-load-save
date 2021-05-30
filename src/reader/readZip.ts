@@ -1,22 +1,16 @@
-// import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
-import { Spectrum1D } from '../../types/Spectrum1D';
-import { Spectrum2D } from '../../types/Spectrum2D';
-const JSZip = require('jszip');
-
-import { getFileExtension, loadFiles } from '../fileUtility';
-import { formatSpectra } from '../utils/formatSpectra';
 import { LoadedFiles } from '../../types/LoadedFiles';
-import { Output } from '../../types/Output';
 import { Options } from '../../types/Options';
+import { Output } from '../../types/Output';
+import { getFileExtension, loadFiles } from '../fileUtility';
 import { FILES_TYPES } from '../utility';
 
 import { readBrukerZip } from './readBrukerZip';
 import { readByExtension } from './readByExtension';
 
-import type { InputType } from 'jszip';
+const JSZip = require('jszip');
 
 export async function readZip(
-  zipFile: Partial<InputType>,
+  zipFile: Uint8Array | string,
   options: Partial<Options> = {},
 ): Promise<Output> {
   const { base64 } = options;
@@ -42,23 +36,26 @@ export async function readZip(
     if (partialResult.spectra) result.spectra.push(...partialResult.spectra);
   }
 
-  let hasOthers = uniqueFileExtensions.some((ex) => FILES_TYPES[ex]);
+  let hasOthers = uniqueFileExtensions.some(
+    (ex) => FILES_TYPES[ex.toUpperCase()],
+  );
 
   if (hasOthers) {
+    const zipFiles: Array<any> = Object.values(zip.files);
     for (let extension of uniqueFileExtensions) {
-      const selectedFilesByExtensions = zip.filter(
+      if (!FILES_TYPES[extension.toUpperCase()]) continue;
+
+      const selectedFilesByExtensions = zipFiles.filter(
         (file: any) => getFileExtension(file.name) === extension,
       );
-      let files: LoadedFiles[] = await loadFiles(
-        selectedFilesByExtensions,
-        {
-          asBuffer: extension === FILES_TYPES.MOL ? false : true,
-        },
-      );
+      let files: LoadedFiles[] = await loadFiles(selectedFilesByExtensions, {
+        asBuffer: extension === FILES_TYPES.MOL ? false : true,
+      });
       let partialResult: Output = await readByExtension(files, options);
       result.spectra.push(...partialResult.spectra);
       result.molecules.push(...partialResult.molecules);
     }
   }
-  return formatSpectra(result);
+
+  return result;
 }

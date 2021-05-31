@@ -1,7 +1,7 @@
 import type { JSZipObject } from 'jszip';
 
-import { LoadFilesFromZipOptions } from '../types/LoadFilesFromZipOptions';
-import { LoadedFiles } from '../types/LoadedFiles';
+import { LoadFilesFromZipOptions } from '../../types/LoadFilesFromZipOptions';
+import { LoadedFiles } from '../../types/LoadedFiles';
 
 export function getFileExtension(name: string): string {
   return name.replace(/^.*\./, '').toLowerCase();

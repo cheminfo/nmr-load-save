@@ -1,4 +1,4 @@
-import { Spectrum2D } from '../../types/Spectrum2D';
+import { Spectrum2D } from '../../types/Spectra/Spectrum2D';
 
 import generateID from './generateID';
 

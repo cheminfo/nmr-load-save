@@ -1,9 +1,9 @@
 import { LoadedFiles } from '../../types/LoadedFiles';
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
-import { getFileExtension } from '../fileUtility';
-import { FILES_TYPES } from '../utility';
-import { nmredataToNmrium } from '../utilities/nmredata/nmredataToNmrium';
+import { getFileExtension } from '../utilities/fileUtility';
+import { FILES_TYPES } from '../utilities/utility';
+import { nmredataZipToNmrium } from '../utilities/nmredata/nmredataToNmrium';
 
 import { readJcamp } from './readJcamp';
 import { readZip } from './readZip';
@@ -41,7 +41,7 @@ async function process(
     case FILES_TYPES.ZIP:
       return readZip(file.binary, options);
     case FILES_TYPES.NMREDATA:
-      return ;
+      return nmredataZipToNmrium(file, options);
     default:
       throw new Error(`The extension ${extension} is not supported`);
   }

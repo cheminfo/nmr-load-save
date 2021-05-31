@@ -3,21 +3,27 @@ import { NmrRecord, parseSDF } from 'nmredata';
 
 import { readJcamp } from '../../reader/readJcamp';
 import { readBrukerZip } from '../../reader/readBrukerZip';
-import { addRanges } from './tools/nmredata/addRanges';
-import { addZones } from './tools/nmredata/addZones';
+import { addRanges } from '../tools/nmredata/addRanges';
+import { addZones } from '../tools/nmredata/addZones';
+import type { JSZipObject } from 'jszip';
+import { Options } from '../../../types/Options';
+import { LoadedFiles } from '../../../types/LoadedFiles';
+import { Spectrum1D } from '../../../types/Spectra/Spectrum1D'
+import { Spectrum2D } from '../../../types/Spectra/Spectrum2D'
+import { Output } from '../../../types/Output';
 
-export async function nmredataToNmrium(file, options) {
-  const jszip = new Jszip();
-  const zip = await jszip.loadAsync(file.binary);
-  const sdfFiles = await getSDF(zip.files);
+type ZipFiles = { [key: string]: JSZipObject };
+
+export async function nmredataToNmrium(files: ZipFiles, options: Options) {
+  const sdfFiles = await getSDF(files);
   const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
-    zipFiles: zip.files,
+    zipFiles: files,
   });
 
   let { spectra, molecules = [] } = jsonData;
 
-  let nmrium = {
+  let nmrium: Output = {
     spectra: [],
     molecules,
   };
@@ -25,26 +31,38 @@ export async function nmredataToNmrium(file, options) {
   for (const data of spectra) {
     const { file, jcampURL } = data.source;
 
-    let spectrum = await getSpectra(file, { jcampURL });
+    let { spectra } = await getSpectra(file, { jcampURL });
 
-    for (let i = 0; i < spectrum.length; i++) {
-      const { info } = spectrum[i];
+    for (let i = 0; i < spectra.length; i++) {
+      const { info } = spectra[i];
 
       if (info.isFid) continue;
 
-      if (info.dimension > 1) {
-        addZones(data.signals, spectrum[i]);
+      let spectrum = spectra[i];
+      if (isSpectrum2D(spectrum)) {
+        addZones(data.signals, spectrum, options);
       } else {
-        addRanges(data.signals, spectrum[i]);
+        addRanges(data.signals, spectrum);
       }
     }
-    nmrium.spectra.push(...spectrum);
+    nmrium.spectra.push(...spectra);
   }
 
   return nmrium;
 }
 
-async function getSpectra(file, options = {}) {
+function isSpectrum2D(spectrum: Spectrum1D | Spectrum2D ): spectrum is Spectrum2D {
+  return (spectrum as Spectrum2D).zones !== undefined;
+}
+
+export async function nmredataZipToNmrium(file: LoadedFiles, options: Options) {
+  const { base64 } = options;
+  const jszip = new Jszip();
+  const zip = await jszip.loadAsync(file.binary, { base64 });
+  return nmredataToNmrium(zip.files, options);
+}
+
+async function getSpectra(file: LoadedFiles, options: Partial<Options> = {}) {
   const {
     xy = true,
     noContours = true,
@@ -56,19 +74,13 @@ async function getSpectra(file, options = {}) {
     case 'dx':
       return readJcamp(file.binary, { xy, noContours });
     case 'zip':
-      return readBrukerZip(
-        file.binary,
-        { xy, noContours, keepOriginal },
-      );
+      return readBrukerZip(file.binary, { xy, noContours, keepOriginal });
     default:
-      if (!jcampURL) {
-        new Error('file extension is not supported');
-        return;
-      }
+      return { spectra: [], molecules: [] };
   }
 }
 
-async function getSDF(zipFiles) {
+async function getSDF(zipFiles: ZipFiles) {
   let result = [];
   for (const file in zipFiles) {
     const pathFile = file.split('/');

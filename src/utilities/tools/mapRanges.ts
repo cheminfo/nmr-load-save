@@ -1,17 +1,21 @@
 import generateID from '../generateID';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from '../../../types/Spectrum1D';
-import { Signal1D } from '../../../types/Signal1D';
+import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
+import { Signal1D } from '../../../types/Signals/Signal1D';
 import { signalKinds } from '../../constants/signalKinds';
 import { Options } from '../../../types/Options';
 
 interface InputRange {
-  from: number,
-  to: number,
-  signal: Array<Signal1D>
+  from: number;
+  to: number;
+  signal: Array<Signal1D>;
 }
 
-export function mapRanges(ranges: Array<InputRange>, datum: Spectrum1D, options: Options = {}) {
+export function mapRanges(
+  ranges: Array<InputRange>,
+  datum: Spectrum1D,
+  options: Options = {},
+) {
   const { x, re } = datum.data;
   const { shiftX = 0 } = options;
 
@@ -33,12 +37,14 @@ export function mapRanges(ranges: Array<InputRange>, datum: Spectrum1D, options:
       { from: newRange.from, to: newRange.to, reverse: true },
     );
     const signal = newRange.signal.map((_signal) => {
-      return {
-        kind: 'signal',
-        id: generateID(),
-        originDelta: _signal.delta - shiftX,
-        ..._signal,
-      };
+      return Object.assign(
+        {
+          kind: 'signal',
+          id: generateID(),
+          originDelta: _signal.delta - shiftX,
+        },
+        _signal,
+      );
     });
     acc.push({
       kind: newRange.signal[0].kind || signalKinds.signal,

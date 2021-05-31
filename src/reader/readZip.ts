@@ -1,8 +1,8 @@
 import { LoadedFiles } from '../../types/LoadedFiles';
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
-import { getFileExtension, loadFiles } from '../fileUtility';
-import { FILES_TYPES } from '../utility';
+import { getFileExtension, loadFiles } from '../utilities/fileUtility';
+import { FILES_TYPES } from '../utilities/utility';
 
 import { readBrukerZip } from './readBrukerZip';
 import { readByExtension } from './readByExtension';

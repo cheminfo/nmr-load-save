@@ -1,7 +1,2 @@
-/**
- * My module
- * @returns A very important number
- */
-export function myModule(): number {
-  return 42;
-}
+export { readByExtension } from "./reader/readByExtension";
+export { readZip } from "./reader/readZip";

@@ -1,10 +1,14 @@
+import { ObjectXY } from './ObjectXY';
+
 export interface Options {
   base64?: boolean;
   shiftX?: number;
-  shift?: { x: number, y: number };
+  shift?: ObjectXY;
   info?: any;
   name?: string;
-  noContour?: boolean;
+  noContours?: boolean;
+  keepOriginal?: boolean;
+  jcampURL?: string;
   xy?: boolean;
   keepRecordsRegExp?: RegExp;
   profiling?: boolean;

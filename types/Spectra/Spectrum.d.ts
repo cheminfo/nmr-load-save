@@ -1,5 +1,5 @@
-import { Display } from './Display';
-import { Source } from './Source';
+import { Display } from '../Display';
+import { Source } from '../Source';
 
 export interface Spectrum {
   id: string | number;

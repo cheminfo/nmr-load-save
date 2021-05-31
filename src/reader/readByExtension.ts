@@ -3,6 +3,7 @@ import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
 import { getFileExtension } from '../fileUtility';
 import { FILES_TYPES } from '../utility';
+import { nmredataToNmrium } from '../utilities/nmredata/nmredataToNmrium';
 
 import { readJcamp } from './readJcamp';
 import { readZip } from './readZip';
@@ -28,7 +29,7 @@ async function process(
   const { extension = getFileExtension(file.name) } = file;
   switch (extension) {
     case FILES_TYPES.MOL:
-      return { molecules: [{ molfile: file.binary }], spectra: []};
+      return { molecules: [{ molfile: file.binary }], spectra: [] };
     case FILES_TYPES.JDX:
     case FILES_TYPES.DX:
       return readJcamp(file.binary, options);
@@ -39,6 +40,8 @@ async function process(
     //   break;
     case FILES_TYPES.ZIP:
       return readZip(file.binary, options);
+    case FILES_TYPES.NMREDATA:
+      return ;
     default:
       throw new Error(`The extension ${extension} is not supported`);
   }

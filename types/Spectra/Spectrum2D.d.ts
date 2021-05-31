@@ -1,7 +1,7 @@
-import { Info2D } from './Info2D';
+import { Info2D } from '../Info/Info2D';
 import { Spectrum } from './Spectrum';
-import { Zones } from './Zones';
-import { Data2D } from './Data2D';
+import { Zones } from '../Zones/Zones';
+import { Data2D } from '../Data2D';
 
 export interface Spectrum2D extends Spectrum {
   zones: Zones;

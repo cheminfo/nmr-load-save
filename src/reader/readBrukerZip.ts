@@ -2,7 +2,7 @@ import { fromBruker } from 'nmr-parser';
 
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
-import { formatSpectra } from '../utils/formatSpectra';
+import { formatSpectra } from '../utilities/formatSpectra';
 
 
 export async function readBrukerZip(

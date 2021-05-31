@@ -1,7 +1,7 @@
-import { Data1D } from './Data1D';
-import { Integrals } from './Integrals';
-import { Peaks } from './Peaks';
-import { Ranges } from './Ranges';
+import { Data1D } from '../Data1D';
+import { Integrals } from '../Integrals';
+import { Peaks } from '../Peaks/Peaks';
+import { Ranges } from '../Ranges/Ranges';
 import { Spectrum } from './Spectrum';
 
 export interface Spectrum1D extends Spectrum {

@@ -16,23 +16,13 @@
 ## Usage
 
 ```js
-import NmrLoadSave from 'nmr-load-save';
+import { readFileSyn } from 'fs';
+import { read } from 'nmr-load-save';
 
-// we can read a molfile or a jcamp
-readText(arrayBuffer|string) {
-  const text = ensureString(value)
-  // jcamp if contains ##title
-  // molfile if contains v2000 or v3000
-  return {
-    spectra: [],
-    molecules: [],
-  }
-}
-
-read(arrayBuffer|string, filename) {
+const data = readFileSync('dataPath');
+// we can read a zip, jdx, nmredata, nmrium file extensions
+read({name, binary: data}) {
   // based on extension we should try to guess the format
-
-
   return {
     spectra: [],
     molecules: [],

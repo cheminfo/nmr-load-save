@@ -15,11 +15,22 @@ import { readNmrium } from './readNmrium';
 import { readZip } from './readZip';
 // import { readJDF } from './readJDF';
 
+/**
+ * read nmr data based on the file extension
+ * @param files {Array<Object>} - List of objects
+ * @param options 
+ * @returns 
+ */
+
+
 export async function read(
-  files: LoadedFiles[],
+  files: LoadedFiles[] | LoadedFiles,
   options: Partial<Options> = {},
 ): Promise<Output> {
   let result: any = { spectra: [], molecules: [] };
+
+  files = !Array.isArray(files) ? [files] : files;
+  
   for (let file of files) {
     const { spectra = [], molecules = [] } = await process(file, options);
     result.spectra.push(...spectra);

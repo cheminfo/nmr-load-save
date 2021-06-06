@@ -1,11 +1,13 @@
 # nmr-load-save
 
-[![NPM version][npm-image]][npm-url]
-[![build status][ci-image]][ci-url]
-[![Test coverage][codecov-image]][codecov-url]
-[![npm download][download-image]][download-url]
+<p align="center">
+  Package to load and save NMR spectra.
+</p>
+<p align="center">
+  <img alt="NMReDATA" src="images/readDiagram.jpg">
+</p>
 
-Package to load and save NMR spectra.
+
 
 ## Installation
 

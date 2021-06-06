@@ -11,7 +11,6 @@ export function formatSpectra(input: any): Output {
   let spectra = [];
   for (let spectrum of inputSpectra) {
     const { info } = spectrum;
-    console.log(info.dimension);
     switch (info.dimension) {
       case MONO_DIMENSIONAL:
         spectra.push(formatSpectrum1D(spectrum));
@@ -21,6 +20,5 @@ export function formatSpectra(input: any): Output {
         break;
     }
   }
-  console.log('spectra')
   return { molecules, spectra };
 }

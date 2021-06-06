@@ -1,6 +1,6 @@
 declare module jszip {
   function loadAsync(
-    zip: Uint8Array | string,
+    zip: string | ArrayBuffer,
     options: any,
   ): Promise<any>
 }

@@ -3,7 +3,7 @@ import { fromJEOL } from 'nmr-parser';
 import { Data1D } from '../../types/Data1D';
 import { Options } from '../../types/Options';
 
-export function readJDF(jdf: Uint8Array, options: Options) {
+export function readJDF(jdf: BufferSource | Uint8Array, options: Options) {
   const { name = '' } = options;
   let converted = fromJEOL(jdf);
   let info = converted.description;

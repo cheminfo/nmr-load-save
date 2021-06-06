@@ -1,9 +1,10 @@
-import generateID from '../generateID';
 import { xyIntegration } from 'ml-spectra-processing';
-import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
-import { Signal1D } from '../../../types/Signals/Signal1D';
-import { signalKinds } from '../../constants/signalKinds';
+
 import { Options } from '../../../types/Options';
+import { Signal1D } from '../../../types/Signals/Signal1D';
+import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
+import { signalKinds } from '../../constants/signalKinds';
+import generateID from '../generateID';
 
 interface InputRange {
   from: number;

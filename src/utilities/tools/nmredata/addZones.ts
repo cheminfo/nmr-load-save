@@ -1,9 +1,9 @@
-import generateID from '../../generateID';
-import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
-import { Options } from '../../../../types/Options';
-import { Zone } from '../../../../types/Zones/Zone';
-import { Signal2D } from '../../../../types/Signals/Signal2D';
 import { ObjectXY } from '../../../../types/ObjectXY';
+import { Options } from '../../../../types/Options';
+import { Signal2D } from '../../../../types/Signals/Signal2D';
+import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
+import { Zone } from '../../../../types/Zones/Zone';
+import generateID from '../../generateID';
 
 const axisLabels: Array<string> = ['x', 'y'];
 const defaultShift: ObjectXY = { x: 0, y: 0 };

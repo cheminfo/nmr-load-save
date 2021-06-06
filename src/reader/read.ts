@@ -1,17 +1,23 @@
+import JSZip from 'jszip';
+
 import { LoadedFiles } from '../../types/LoadedFiles';
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
-import { getFileExtension } from '../utilities/fileUtility';
-import { FILES_TYPES } from '../utilities/utility';
-import { nmredataZipToNmrium } from '../utilities/nmredata/nmredataToNmrium';
+import { FILES_TYPES, FILES_SIGNATURES } from '../utilities/files/constants';
+import { getFileExtension } from '../utilities/files/getFileExtension';
+import { getFileSignature } from '../utilities/files/getFileSignature';
+import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
+import { isString } from '../utilities/tools/isString';
 
 import { readJcamp } from './readJcamp';
+import { readNMReData } from './readNMReData';
+import { readNmrium } from './readNmrium';
 import { readZip } from './readZip';
 // import { readJDF } from './readJDF';
 
-export async function readByExtension(
+export async function read(
   files: LoadedFiles[],
-  options: Partial<Options>,
+  options: Partial<Options> = {},
 ): Promise<Output> {
   let result: any = { spectra: [], molecules: [] };
   for (let file of files) {
@@ -41,7 +47,25 @@ async function process(
     case FILES_TYPES.ZIP:
       return readZip(file.binary, options);
     case FILES_TYPES.NMREDATA:
-      return nmredataZipToNmrium(file, options);
+      return readNMReData(file, options);
+    case FILES_TYPES.NMRIUM:
+    case FILES_TYPES.JSON:
+      const { binary } = file;
+
+      if (!isString(binary)) {
+         const fileSignature = getFileSignature(binary);
+        if (fileSignature === FILES_SIGNATURES.ZIP) {
+          const { base64 } = options;
+          const unzipResult = await JSZip.loadAsync(binary, { base64 });
+          const files = await loadFilesFromZip(Object.values(unzipResult.files));
+          return process(files[0], options);
+        } else {
+          const decoder = new TextDecoder('utf8');
+          return readNmrium(decoder.decode(binary));
+        }
+      } else {
+        return readNmrium(binary);
+      }
     default:
       throw new Error(`The extension ${extension} is not supported`);
   }

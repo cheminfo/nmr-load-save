@@ -1,9 +1,9 @@
 // import { Spectrum1D } from 'cheminfo-types';
 import { Spectrum1D } from '../../types/Spectra/Spectrum1D';
+
 import { getData } from './utility';
 
 export function formatSpectrum1D(options: any): Spectrum1D {
-  console.log(Object.keys(options));
   const {
     shiftX = 0,
     meta,
@@ -29,7 +29,7 @@ export function formatSpectrum1D(options: any): Spectrum1D {
 
   spectrum.originalInfo = spectrum.info;
 
-  let data = getData(dependentVariables[0].components);
+  let { data = getData(dependentVariables[0].components) } = options;
 
   if (data.im) info.isComplex = true;
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];

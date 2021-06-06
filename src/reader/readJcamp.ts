@@ -4,12 +4,7 @@ import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
 import { formatSpectra } from '../utilities/formatSpectra';
 
-
-interface Molecule {
-  molfile: string;
-}
-
-type Text = Uint8Array | string;
+type Text = BufferSource | string | Uint8Array;
 
 export function readJcamp(text: Text, options: Partial<Options> = {}): Output {
   let output: any = { spectra: [], molecules: [] };
@@ -30,4 +25,10 @@ export function readJcamp(text: Text, options: Partial<Options> = {}): Output {
   output.spectra.push(...spectra);
 
   return formatSpectra(output);
+}
+
+export function readJcampFromURL(jcampURL: string, options: Options): Promise<Output> {
+  return fetch(jcampURL)
+    .then((response) => response.arrayBuffer())
+    .then((jcamp) => readJcamp(jcamp, options));
 }

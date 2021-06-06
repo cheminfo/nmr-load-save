@@ -6,7 +6,7 @@ import { formatSpectra } from '../utilities/formatSpectra';
 
 
 export async function readBrukerZip(
-  zip: Uint8Array | string,
+  zip: BufferSource | string | Uint8Array,
   options: Partial<Options>,
 ): Promise<Output> {
   const { shiftX } = options;
@@ -14,7 +14,6 @@ export async function readBrukerZip(
 
   const entries = await fromBruker(zip, options);
   for (let entry of entries) {
-    console.log('entri', Object.keys(entry))
     const { dependentVariables, info, meta, source } = entry;
     output.spectra.push({ shiftX, dependentVariables, meta, info, source });
   }

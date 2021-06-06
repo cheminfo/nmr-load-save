@@ -1,20 +1,20 @@
 import Jszip from 'jszip';
+import type { JSZipObject } from 'jszip';
 import { NmrRecord, parseSDF } from 'nmredata';
 
-import { readJcamp } from '../../reader/readJcamp';
-import { readBrukerZip } from '../../reader/readBrukerZip';
-import { addRanges } from '../tools/nmredata/addRanges';
-import { addZones } from '../tools/nmredata/addZones';
-import type { JSZipObject } from 'jszip';
-import { Options } from '../../../types/Options';
-import { LoadedFiles } from '../../../types/LoadedFiles';
-import { Spectrum1D } from '../../../types/Spectra/Spectrum1D'
-import { Spectrum2D } from '../../../types/Spectra/Spectrum2D'
-import { Output } from '../../../types/Output';
+import { LoadedFiles } from '../../types/LoadedFiles';
+import { Options } from '../../types/Options';
+import { Output } from '../../types/Output';
+import { isSpectrum2D } from '../utilities/tools/isSpectrum2D';
+import { addRanges } from '../utilities/tools/nmredata/addRanges';
+import { addZones } from '../utilities/tools/nmredata/addZones';
 
-type ZipFiles = { [key: string]: JSZipObject };
+import { readBrukerZip } from './readBrukerZip';
+import { readJcamp } from './readJcamp';
 
-export async function nmredataToNmrium(files: ZipFiles, options: Options) {
+interface ZipFiles { [key: string]: JSZipObject }
+
+export async function readNMReDataFiles(files: ZipFiles, options: Options) {
   const sdfFiles = await getSDF(files);
   const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
@@ -51,15 +51,11 @@ export async function nmredataToNmrium(files: ZipFiles, options: Options) {
   return nmrium;
 }
 
-function isSpectrum2D(spectrum: Spectrum1D | Spectrum2D ): spectrum is Spectrum2D {
-  return (spectrum as Spectrum2D).zones !== undefined;
-}
-
-export async function nmredataZipToNmrium(file: LoadedFiles, options: Options) {
+export async function readNMReData(file: LoadedFiles, options: Options = {}) {
   const { base64 } = options;
   const jszip = new Jszip();
   const zip = await jszip.loadAsync(file.binary, { base64 });
-  return nmredataToNmrium(zip.files, options);
+  return readNMReDataFiles(zip.files, options);
 }
 
 async function getSpectra(file: LoadedFiles, options: Partial<Options> = {}) {
@@ -84,7 +80,7 @@ async function getSDF(zipFiles: ZipFiles) {
   let result = [];
   for (const file in zipFiles) {
     const pathFile = file.split('/');
-    if (pathFile[pathFile.length - 1].match(/^[^.].+sdf$/)) {
+    if (/^[^.].+sdf$/.exec(pathFile[pathFile.length - 1])) {
       const filename = pathFile[pathFile.length - 1].replace(/\.sdf/, '');
       const root = pathFile.slice(0, pathFile.length - 1).join('/');
       const sdf = await zipFiles[file].async('string');

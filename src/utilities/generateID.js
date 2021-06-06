@@ -1,4 +1,4 @@
-"use strict";
+
 
 exports.__esModule = true;
 let BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

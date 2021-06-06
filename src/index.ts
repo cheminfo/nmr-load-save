@@ -1,2 +1,1 @@
-export { readByExtension } from "./reader/readByExtension";
-export { readZip } from "./reader/readZip";
+export { read } from "./reader/read";

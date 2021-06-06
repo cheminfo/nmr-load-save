@@ -1,5 +1,5 @@
-import { mapRanges } from '../mapRanges';
 import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';
+import { mapRanges } from '../mapRanges';
 
 interface ComputeFromTo {
   to: number;

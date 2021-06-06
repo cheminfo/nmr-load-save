@@ -1,10 +1,11 @@
-import jszip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import { get1DSignals } from './util/nmredata/get1DSignals';
 import { get2DSignals } from './util/nmredata/get2DSignals';
 import { getLabels } from './util/nmredata/getLabels';
+
+const jszip = require('jszip');
 
 const tags = {
   solvent: 'SOLVENT',

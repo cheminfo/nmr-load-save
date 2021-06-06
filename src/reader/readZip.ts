@@ -1,16 +1,17 @@
 import { LoadedFiles } from '../../types/LoadedFiles';
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
-import { getFileExtension, loadFiles } from '../utilities/fileUtility';
-import { FILES_TYPES } from '../utilities/utility';
+import { FILES_TYPES } from '../utilities/files/constants';
+import { getFileExtension } from '../utilities/files/getFileExtension';
+import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
 
+import { read } from './read';
 import { readBrukerZip } from './readBrukerZip';
-import { readByExtension } from './readByExtension';
 
 const JSZip = require('jszip');
 
 export async function readZip(
-  zipFile: Uint8Array | string,
+  zipFile: BufferSource | string | Uint8Array,
   options: Partial<Options> = {},
 ): Promise<Output> {
   const { base64 } = options;
@@ -48,10 +49,10 @@ export async function readZip(
       const selectedFilesByExtensions = zipFiles.filter(
         (file: any) => getFileExtension(file.name) === extension,
       );
-      let files: LoadedFiles[] = await loadFiles(selectedFilesByExtensions, {
+      let files: LoadedFiles[] = await loadFilesFromZip(selectedFilesByExtensions, {
         asBuffer: extension === FILES_TYPES.MOL ? false : true,
       });
-      let partialResult: Output = await readByExtension(files, options);
+      let partialResult: Output = await read(files, options);
       result.spectra.push(...partialResult.spectra);
       result.molecules.push(...partialResult.molecules);
     }

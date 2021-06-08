@@ -1,13 +1,31 @@
+import JSZip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
-import { get1DSignals } from './util/nmredata/get1DSignals';
-import { get2DSignals } from './util/nmredata/get2DSignals';
-import { getLabels } from './util/nmredata/getLabels';
+import { Output as State } from '../../types/Output';
+import { Spectra } from '../../types/Spectra/Spectra';
+import { ByDiaID } from '../../types/utilities/writeNmreData/ByDiaID';
+import { get1DSignals } from '../utilities/tools/nmredata/get1DSignals';
+import { get2DSignals } from '../utilities/tools/nmredata/get2DSignals';
+import { getLabels } from '../utilities/tools/nmredata/getLabels';
 
-const jszip = require('jszip');
+type JSZipType = typeof JSZip;
 
-const tags = {
+interface addNMReDataOptions {
+  id?: string;
+  prefix?: string;
+  filename?: string;
+  molecule: {
+    [index: string]: string;
+    molfile: string;
+  };
+}
+
+interface Tags {
+  [index: string]: string;
+}
+
+const tags: Tags = {
   solvent: 'SOLVENT',
   temperature: 'TEMPERATURE',
   assignment: 'ASSIGNMENT',
@@ -16,16 +34,13 @@ const tags = {
   id: 'ID',
 };
 
-export async function nmriumToNmredata(state, options = {}) {
-  const {
-    data, // it would be changed depending of the final location
-    molecules,
-  } = state || {
-    data: [], // it would be changed depending of the final location
+export async function nmriumToNmredata(state: State, options: addNMReDataOptions) {
+  const { spectra: data, molecules } = state || {
+    spectra: [],
     molecules: [],
   };
 
-  let nmrRecord = new jszip();
+  let nmrRecord = new JSZip();
 
   for (const molecule of molecules) {
     await addNMReDATA(data, nmrRecord, {
@@ -38,7 +53,11 @@ export async function nmriumToNmredata(state, options = {}) {
   return nmrRecord;
 }
 
-async function addNMReDATA(data, nmrRecord, options = {}) {
+async function addNMReDATA(
+  data: Spectra,
+  nmrRecord: JSZipType,
+  options: addNMReDataOptions,
+) {
   let {
     id,
     prefix = '\n> <NMREDATA_',
@@ -48,15 +67,12 @@ async function addNMReDATA(data, nmrRecord, options = {}) {
 
   let sdfResult = '';
 
-  let groupedDiaIDs;
-  if (molecule) {
-    molecule = OCLMolecule.fromMolfile(molecule.molfile);
-    sdfResult += molecule.toMolfile();
-    molecule.addImplicitHydrogens();
-    groupedDiaIDs = getGroupedDiastereotopicAtomIDs(molecule);
-  }
+  const oclMolecule = OCLMolecule.fromMolfile(molecule.molfile);
+  sdfResult += oclMolecule.toMolfile();
+  oclMolecule.addImplicitHydrogens();
+  const groupedDiaIDs = getGroupedDiastereotopicAtomIDs(oclMolecule);
 
-  let labels = molecule ? getLabels(data, { groupedDiaIDs, molecule }) : {};
+  let labels = getLabels(data, { groupedDiaIDs, molecule });
 
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;
   sdfResult += putTag(data, 'temperature', { prefix });
@@ -70,9 +86,9 @@ async function addNMReDATA(data, nmrRecord, options = {}) {
   nmrRecord.file(`${filename}.sdf`, sdfResult);
 }
 
-function formatAssignments(labels, options) {
+function formatAssignments(labels: ByDiaID, options: { prefix?: string } = {}) {
   if (!labels) return '';
-  const { prefix } = options;
+  const { prefix = '' } = options;
   let str = `${prefix + tags.assignment}>\n`;
   for (let l in labels) {
     let atoms = labels[l].atoms;
@@ -83,7 +99,11 @@ function formatAssignments(labels, options) {
   return str;
 }
 
-function putTag(spectra, tag, options = {}) {
+function putTag(
+  spectra: Spectra,
+  tag: string,
+  options: { prefix?: string } = {},
+) {
   const { prefix } = options;
   let str = '';
   for (let spectrum of spectra) {

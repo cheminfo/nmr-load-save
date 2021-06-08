@@ -1,21 +1,32 @@
 import { getShortestPaths } from 'openchemlib-utils';
 
+import { Spectra } from '../../../../types/Spectra/Spectra';
+import { CreateLabelInput } from '../../../../types/utilities/writeNmreData/CreateLabelInput';
+import { GetLabelsOptions } from '../../../../types/utilities/writeNmreData/GetLabelsOptions';
+import { GetLabelsOutput } from '../../../../types/utilities/writeNmreData/GetLabelsOutput';
+
 import { flat2DSignals } from './flat2DSignals';
 import { getToFix } from './getToFix';
 
-export function getLabels(data, options = {}) {
+
+export function getLabels(
+  data: Spectra,
+  options: GetLabelsOptions,
+): GetLabelsOutput {
   const { groupedDiaIDs, molecule } = options;
 
   let connections = getShortestPaths(molecule, { toLabel: 'H', maxLength: 1 });
 
-  let byDiaID = {};
-  let byAssignNumber = {};
+  let byDiaID: any = {};
+  let byAssignNumber: any = {};
   for (let spectrum of data) {
     let { dimension, nucleus } = spectrum.info;
     let toFix = getToFix(nucleus);
 
     let [roiKey, flatSignals] =
-      dimension > 1 ? ['zones', flat2DSignals] : ['ranges', (s) => s || []];
+      dimension > 1
+        ? ['zones', flat2DSignals]
+        : ['ranges', (s: Array<any> | undefined) => s || []];
 
     let rois = spectrum[roiKey].values || [];
     for (let roi of rois) {
@@ -30,9 +41,10 @@ export function getLabels(data, options = {}) {
             return false;
           });
           // the addition of one in atom number it is because the atoms enumeration starts from zero
+          if (!groupedOclID) continue;
 
-          let labelOptions = {
-            atom: groupedOclID.atoms[0],
+          let labelOptions: CreateLabelInput = {
+            atom: Number(groupedOclID.atoms[0]),
             molecule,
             connections,
             atomLabel: groupedOclID.atomLabel,
@@ -45,7 +57,7 @@ export function getLabels(data, options = {}) {
           };
 
           for (let atom of groupedOclID.atoms) {
-            labelOptions.atom = atom;
+            labelOptions.atom = Number(atom);
             byAssignNumber[atom] = {
               shift: delta,
               diaID,
@@ -59,15 +71,17 @@ export function getLabels(data, options = {}) {
   return { byAssignNumber, byDiaID };
 }
 
-function createLabel(options) {
+function createLabel(options: CreateLabelInput): string {
   const { atom, molecule, atomLabel, connections } = options;
   let label = '';
   if (atomLabel !== 'C') {
     let connectedTo = connections[atom];
-    let path = connectedTo.find((e) => e && e.length > 1);
-    let pLabel = `${atomLabel}${path[0] + 1}`;
-    let hLabel = `${molecule.getAtomLabel(path[1])}${path[1] + 1}`;
-    label = `${pLabel}${hLabel}`;
+    let path = connectedTo.find((e: number[]) => e && e.length > 1);
+    if (path) {
+      let pLabel = `${atomLabel}${path[0] + 1}`;
+      let hLabel = `${molecule.getAtomLabel(path[1])}${path[1] + 1}`;
+      label = `${pLabel}${hLabel}`;
+    }
   } else {
     label = `${atomLabel}${atom + 1}`;
   }

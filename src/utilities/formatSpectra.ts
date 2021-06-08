@@ -18,6 +18,8 @@ export function formatSpectra(input: any): Output {
       case BI_DIMENSIONAL:
         spectra.push(formatSpectrum2D(spectrum));
         break;
+      default:
+        new Error('dimension does not supported');
     }
   }
   return { molecules, spectra };

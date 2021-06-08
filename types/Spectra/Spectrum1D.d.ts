@@ -5,6 +5,7 @@ import { Ranges } from '../Ranges/Ranges';
 import { Spectrum } from './Spectrum';
 
 export interface Spectrum1D extends Spectrum {
+  [index: string]: Data1D | Peaks | Ranges | Integrals | number | any | Array<any>;
   data: Data1D;
   originalData?: Data1D;
   peaks: Peaks;

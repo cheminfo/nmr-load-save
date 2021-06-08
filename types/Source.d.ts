@@ -1,4 +1,5 @@
+import { LoadedFiles } from './LoadedFiles';
 export interface Source {
-  jcampURL: string;
-  file: File;
+  jcampURL?: string;
+  file?: LoadedFiles;
 }

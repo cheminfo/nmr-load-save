@@ -1,13 +1,26 @@
+import type JSZipType from 'jszip';
+
+import { Spectra } from '../../../../types/Spectra/Spectra';
+import { Options } from '../../../../types/utilities/writeNmreData/Options';
+import { isSpectrum2D } from '../isSpectrum2D';
+
 import { addSource } from './addSource';
 import { getToFix } from './getToFix';
 
-export async function get1DSignals(data, nmrRecord, options = {}) {
-  let { prefix, labels } = options;
+
+
+
+export async function get1DSignals(
+  data: Spectra,
+  nmrRecord: JSZipType,
+  options: Options,
+) {
+  let { prefix = '', labels } = options;
   let str = '';
   let nucleusArray = [];
   for (let spectrum of data) {
     const { info } = spectrum;
-    if (info.isFid || info.dimension > 1) continue;
+    if (info.isFid || isSpectrum2D(spectrum)) continue;
     let partTag = '';
     let ranges = spectrum.ranges.values || [];
 
@@ -31,7 +44,6 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
 
     partTag += await addSource(nmrRecord, {
       spectrum,
-      tag: partTag,
       source,
     });
 
@@ -70,12 +82,12 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
           let jCoupling = signal.j;
           if (Array.isArray(jCoupling) && jCoupling.length) {
             let separator = ', J=';
-            for (let i = 0; i < jCoupling.length; i++) {
-              partTag += `${separator}${Number(jCoupling[i].coupling).toFixed(
+            for (const jcoupling of jCoupling) {
+              partTag += `${separator}${Number(jcoupling.coupling).toFixed(
                 3,
               )}`;
-              if (jCoupling[i].diaID) {
-                let { diaID } = jCoupling[i];
+              if (jcoupling.diaID) {
+                let { diaID } = jcoupling;
                 if (!Array.isArray(diaID)) diaID = [diaID];
                 if (!diaID.length) continue;
                 let jCouple =
@@ -87,10 +99,6 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
           }
           if (range.integral) {
             partTag += `, E=${Number(range.integral).toFixed(toFix)}`;
-          } else if (range.pubIntegral) {
-            partTag += `, E=${range.putIntegral.toFixed(toFix)}`;
-          } else if (range.signal[0].nbAtoms !== undefined) {
-            partTag += `, E=${range.signal[0].nbAtoms}`;
           }
         }
       }
@@ -98,7 +106,7 @@ export async function get1DSignals(data, nmrRecord, options = {}) {
     }
     partTag += '\n';
 
-    if (partTag.match('\\\n')) str += partTag;
+    if (/\n/.exec(partTag)) str += partTag;
   }
   return str;
 }

@@ -4,6 +4,7 @@ import { Zones } from '../Zones/Zones';
 import { Data2D } from '../Data2D';
 
 export interface Spectrum2D extends Spectrum {
+  [index: string]: Zones | Array<any> | any | Data2D | Partial<Info2D>;
   zones: Zones;
   meta: any;
   filters: Array<any>;

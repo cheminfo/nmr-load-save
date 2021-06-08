@@ -1,16 +1,25 @@
+import type JSZipType from 'jszip';
+
+import { Spectra } from '../../../../types/Spectra/Spectra';
+import { ByDiaID } from '../../../../types/utilities/writeNmreData/ByDiaID';
+import { Options } from '../../../../types/utilities/writeNmreData/Options';
+import { isSpectrum2D } from '../isSpectrum2D';
+
 import { addSource } from './addSource';
 import { getCouplingObserved } from './getCouplingObserved';
 import { getToFix } from './getToFix';
 
+
+
 const isArray = Array.isArray;
 
-export async function get2DSignals(data, nmrRecord, options = {}) {
+export async function get2DSignals(data: Spectra, nmrRecord: JSZipType, options: Options) {
   const { byDiaID } = options.labels;
   let str = '';
   let nucleusRecorded = [];
   const prefix = `\n> <NMREDATA_2D_`;
   for (let spectrum of data) {
-    if (spectrum.info.dimension < 2) continue;
+    if (!isSpectrum2D(spectrum)) continue;
     let partTag = '';
     const { info, source } = spectrum;
     let { nucleus, experiment, pulseSequence } = info;
@@ -25,7 +34,6 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
 
     partTag += await addSource(nmrRecord, {
       spectrum,
-      tag: partTag,
       source,
     });
 
@@ -45,7 +53,7 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
         let { x, y, peak } = signal;
         let xLabel = getAssignment(x, byDiaID, toFix[0]);
         let yLabel = getAssignment(y, byDiaID, toFix[1]);
-        let intensity = Math.max(...peak.map((e) => e.z));
+        let intensity = isArray(peak) ? Math.max(...peak.map((e) => e.z)) : 0;
         partTag += `\n${xLabel}/${yLabel}, I=${intensity.toFixed(2)}\\`;
       }
     }
@@ -54,12 +62,15 @@ export async function get2DSignals(data, nmrRecord, options = {}) {
   return str.length > 0 ? `${str}\n` : '';
 }
 
-function getAssignment(axis, labels, toFix) {
+function getAssignment(axis: any, labels: ByDiaID, toFix: number) {
   let { diaID, delta } = axis;
   if (diaID) {
     if (!isArray(diaID)) diaID = [diaID];
     if (diaID.length < 1) return Number(delta).toFixed(toFix);
-    let label = diaID.map((diaID) => labels[diaID].label).join(',');
+    let label:string = diaID.map((diaID: string) => {
+      let label: string = labels[diaID].label;
+      return label;
+    }).join(',');
     return diaID.length > 1 ? `(${label})` : label;
   }
   return Number(delta).toFixed(toFix);

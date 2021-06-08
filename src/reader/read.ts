@@ -18,10 +18,9 @@ import { readZip } from './readZip';
 /**
  * read nmr data based on the file extension
  * @param files {Array<Object>} - List of objects
- * @param options 
- * @returns 
+ * @param options
+ * @returns
  */
-
 
 export async function read(
   files: LoadedFiles[] | LoadedFiles,
@@ -30,7 +29,7 @@ export async function read(
   let result: any = { spectra: [], molecules: [] };
 
   files = !Array.isArray(files) ? [files] : files;
-  
+
   for (let file of files) {
     const { spectra = [], molecules = [] } = await process(file, options);
     result.spectra.push(...spectra);
@@ -43,26 +42,24 @@ async function process(
   file: LoadedFiles,
   options: Partial<Options>,
 ): Promise<Output> {
-  const { extension = getFileExtension(file.name) } = file;
+  const { extension = getFileExtension(file.name), binary } = file;
   switch (extension) {
     case FILES_TYPES.MOL:
-      return { molecules: [{ molfile: file.binary }], spectra: [] };
+      return { molecules: [{ molfile: binary }], spectra: [] };
     case FILES_TYPES.JDX:
     case FILES_TYPES.DX:
-      return readJcamp(file.binary, options);
+      return readJcamp(binary, options);
     // case FILES_TYPES.JDF:
     //   if (typeof file.binary !== 'string') {
     //     return { spectra: [readJDF(file.binary, { file.name, ...options })] };
     //   }
     //   break;
     case FILES_TYPES.ZIP:
-      return readZip(file.binary, options);
+      return readZip(binary, options);
     case FILES_TYPES.NMREDATA:
       return readNMReData(file, options);
     case FILES_TYPES.NMRIUM:
     case FILES_TYPES.JSON:
-      const { binary } = file;
-
       if (!isString(binary)) {
          const fileSignature = getFileSignature(binary);
         if (fileSignature === FILES_SIGNATURES.ZIP) {

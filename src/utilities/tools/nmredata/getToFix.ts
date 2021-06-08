@@ -1,4 +1,4 @@
-export function getToFix(nucleusArray) {
+export function getToFix(nucleusArray: Array<string>|string = '') {
   if (!Array.isArray(nucleusArray)) nucleusArray = [nucleusArray];
   let toFix = [];
   for (let nucleus of nucleusArray) {
@@ -7,7 +7,7 @@ export function getToFix(nucleusArray) {
   return toFix;
 }
 
-function chooseDecimal(nucleus) {
+function chooseDecimal(nucleus: string) {
   switch (nucleus.toUpperCase()) {
     case '1H':
       return 2;

@@ -1,4 +1,4 @@
-export function getCouplingObserved(experiment: string) {
+export function getCouplingObserved(experiment = '') {
   switch (experiment.toLowerCase()) {
     case 'hsqc':
     case 'cosy':

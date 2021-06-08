@@ -1,3 +1,5 @@
+import JSZip from 'jszip';
+
 import { LoadedFiles } from '../../types/LoadedFiles';
 import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
@@ -8,10 +10,9 @@ import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
 import { read } from './read';
 import { readBrukerZip } from './readBrukerZip';
 
-const JSZip = require('jszip');
 
 export async function readZip(
-  zipFile: BufferSource | string | Uint8Array,
+  zipFile: string | ArrayBuffer,
   options: Partial<Options> = {},
 ): Promise<Output> {
   const { base64 } = options;

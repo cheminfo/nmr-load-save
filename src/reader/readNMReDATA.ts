@@ -33,12 +33,11 @@ export async function readNMReDataFiles(files: ZipFiles, options: Options) {
 
     let { spectra } = await getSpectra(file, { jcampURL });
 
-    for (let i = 0; i < spectra.length; i++) {
-      const { info } = spectra[i];
+    for (const spectrum of spectra) {
+      const { info } = spectrum;
 
       if (info.isFid) continue;
 
-      let spectrum = spectra[i];
       if (isSpectrum2D(spectrum)) {
         addZones(data.signals, spectrum, options);
       } else {
@@ -63,7 +62,6 @@ async function getSpectra(file: LoadedFiles, options: Partial<Options> = {}) {
     xy = true,
     noContours = true,
     keepOriginal = true,
-    jcampURL,
   } = options;
   switch (file.extension) {
     case 'jdx':

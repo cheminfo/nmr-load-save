@@ -1,4 +1,3 @@
-import { LoadedFiles } from '../../../types/LoadedFiles';
 import { isString } from '../tools/isString';
 
 export function getFileSignature(file: ArrayBuffer) {
@@ -7,5 +6,3 @@ export function getFileSignature(file: ArrayBuffer) {
     .slice(0, 4)
     .reduce((acc, byte) => (acc += byte.toString(16).padStart(2, '0')), '');
 }
-
-

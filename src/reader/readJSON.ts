@@ -34,7 +34,7 @@ export async function readJSON(text: Text, options: Options): Promise<Output> {
 }
 
 function addJcampFromURL(spectra: any, jcampURL: any, datum: any, options: Options) {
-  readJcampFromURL(jcampURL, options).then((result) => {
+  void readJcampFromURL(jcampURL, options).then((result) => {
     for (let spectrum of result.spectra) {
       spectra.push(spectrum);
     }

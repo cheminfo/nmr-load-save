@@ -1,7 +1,7 @@
 import FS from 'fs';
 import { join } from 'path';
 
-import { isSpectrum2D } from '../../utilities/tools/isSpectrum2D';
+import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
 import { readZip } from '../readZip';
 
 describe('test myModule', () => {
@@ -10,16 +10,12 @@ describe('test myModule', () => {
     let result = await readZip(data);
     expect(result.spectra).toHaveLength(2);
     expect(result.molecules).toHaveLength(1);
-    let spectrum0 = result.spectra[0];
-    if (!isSpectrum2D(spectrum0)) {
-      expect(spectrum0.data.x).toHaveLength(16384);
-      expect(spectrum0.info.isFid).toBe(true);
-      expect(spectrum0.info.solvent).toBe('CDCl3');
-    }
-    let spectrum1 = result.spectra[1];
-    if (!isSpectrum2D(spectrum1)) {
-      expect(spectrum1.data.x).toHaveLength(8192);
-      expect(spectrum1.info.solvent).toBe('Acetone');
-    }
+    let spectrum0 = result.spectra[0] as Spectrum1D;
+    expect(spectrum0.data.x).toHaveLength(16384);
+    expect(spectrum0.info.isFid).toBe(true);
+    expect(spectrum0.info.solvent).toBe('CDCl3');
+    let spectrum1 = result.spectra[1] as Spectrum1D;
+    expect(spectrum1.data.x).toHaveLength(8192);
+    expect(spectrum1.info.solvent).toBe('Acetone');
   });
 });

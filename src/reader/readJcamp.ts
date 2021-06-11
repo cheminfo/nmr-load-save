@@ -10,7 +10,6 @@ export function readJcamp(text: Text, options: Partial<Options> = {}): Output {
 
   let spectra = fromJCAMP(
     text,
-    // typeof text === 'object' ? text : Buffer.from(text, 'utf8'),
     {
       ...{
         noContour: true,

@@ -38,6 +38,19 @@ export function formatSpectrum2D(options: any): Spectrum2D {
 
   spectrum.originalInfo = spectrum.info;
 
+  spectrum.display = Object.assign(
+    {
+      name: options.display?.name ? options.display.name : generateID(),
+      positiveColor: 'red',
+      negativeColor: 'blue',
+      isPositiveVisible: true,
+      isNegativeVisible: true,
+      isVisible: true,
+      dimension: 2,
+    },
+    options.display,
+  );
+
   let { data = dependentVariables[0].components } = options;
 
   spectrum.data = {

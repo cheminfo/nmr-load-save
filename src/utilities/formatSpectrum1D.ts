@@ -60,7 +60,6 @@ export function formatSpectrum1D(options: any): Spectrum1D {
     {
       name: options.display?.name ? options.display.name : id,
       color: 'black',
-      ...getColor(options, usedColors),
       isVisible: true,
       isPeaksMarkersVisible: true,
       isRealSpectrumVisible: true,

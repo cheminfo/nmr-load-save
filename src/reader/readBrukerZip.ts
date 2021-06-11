@@ -6,7 +6,7 @@ import { formatSpectra } from '../utilities/formatSpectra';
 
 
 export async function readBrukerZip(
-  zip: BufferSource | string | Uint8Array,
+  zip: string | ArrayBuffer,
   options: Partial<Options>,
 ): Promise<Output> {
   const { shiftX } = options;

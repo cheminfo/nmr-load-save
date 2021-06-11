@@ -1,10 +1,12 @@
 // import { Spectrum1D } from 'cheminfo-types';
 import { Spectrum1D } from '../../types/Spectra/Spectrum1D';
 
+import generateID from './generateID';
 import { getData } from './utility';
 
 export function formatSpectrum1D(options: any): Spectrum1D {
   const {
+    id = generateID(),
     shiftX = 0,
     meta,
     peaks = {},
@@ -13,7 +15,7 @@ export function formatSpectrum1D(options: any): Spectrum1D {
     source = {},
     dependentVariables = [],
   } = options;
-  let spectrum: any = { shiftX, meta, filters };
+  let spectrum: any = { id, shiftX, meta, filters };
 
   spectrum.source = {
     ...{
@@ -53,6 +55,19 @@ export function formatSpectrum1D(options: any): Spectrum1D {
     },
     ...info,
   };
+
+  spectrum.display = Object.assign(
+    {
+      name: options.display?.name ? options.display.name : id,
+      color: 'black',
+      ...getColor(options, usedColors),
+      isVisible: true,
+      isPeaksMarkersVisible: true,
+      isRealSpectrumVisible: true,
+      isVisibleInDomain: true,
+    },
+    options.display,
+  )
 
   spectrum.originalData = spectrum.data;
 

@@ -1,35 +1,39 @@
 import { fromJEOL } from 'nmr-parser';
 
 import { Data1D } from '../../types/Data1D';
+import { Data2D } from '../../types/Data2D';
 import { Options } from '../../types/Options';
+import { formatSpectra } from '../utilities/formatSpectra';
 
-export function readJDF(jdf: BufferSource | Uint8Array, options: Options) {
+export function readJDF(jdf: ArrayBuffer, options: Options) {
   const { name = '' } = options;
+  let output: any = { spectra: [], molecules: [] };
+
   let converted = fromJEOL(jdf);
   let info = converted.description;
   let metadata = info.metadata;
-  // delete info.metadata;
   const acquisitionMode = 0;
   const experiment = info.dimension === 1 ? '1d' : '2d';
   const type = 'NMR SPECTRUM';
-  const nucleus = info.nucleus[0];
-  const numberOfPoints = info.numberOfPoints[0];
-  const acquisitionTime = info.acquisitionTime[0];
+  const nucleus = info.dimension === 1 ? info.nucleus[0] : info.nucleus;
+  const numberOfPoints = info.numberOfPoints;
+  const acquisitionTime = info.acquisitionTime;
 
-  const baseFrequency = info.baseFrequency[0];
-  const frequencyOffset = info.frequencyOffset[0];
+  const baseFrequency = info.baseFrequency;
+  const frequencyOffset = info.frequencyOffset;
 
   const spectralWidthClipped = converted.application.spectralWidthClipped;
 
-  let spectra = [];
-  if (info.dimension === 1) {
-    if (converted.dependentVariables) {
-      spectra.push(formatCSD(converted));
+  let data = [];
+  if (converted.dependentVariables) {
+    if (info.dimension === 1) {
+      data.push(format1D(converted));
+    } else if (info.dimension === 2) {
+      data.push(format2D(converted));
     }
   }
-
-  return {
-    data: spectra,
+  output.spectra = {
+    data,
     info: {
       acquisitionMode,
       experiment,
@@ -48,10 +52,11 @@ export function readJDF(jdf: BufferSource | Uint8Array, options: Options) {
       binary: jdf,
     },
     ...options,
-  };
+  }
+  return formatSpectra(output);
 }
 
-function formatCSD(result: any): Data1D {
+function format1D(result: any): Data1D {
   let dimension = result.dimensions[0];
   let dependentVariables = result.dependentVariables;
 
@@ -94,5 +99,59 @@ function formatCSD(result: any): Data1D {
   }
 
   data.x = scale;
+  return data;
+}
+
+function format2D(result: any): Data2D {
+  let dimensions = result.dimensions;
+  let dependentVariables = result.dependentVariables;
+  let quantityName = dimensions[0].quantityName;
+
+  let reBuffer = [];
+  let imBuffer = [];
+  let maxZ = Number.MIN_SAFE_INTEGER;
+  let minZ = Number.MAX_SAFE_INTEGER;
+  for (const buffer of dependentVariables[0].components) {
+    let re = [];
+    let im = [];
+    for (let i = buffer.length - 1; i > 0; i -= 2) {
+      let realValue = buffer[i - 1];
+      if (realValue > maxZ) maxZ = realValue;
+      if (realValue < minZ) minZ = realValue;
+      re.push(realValue);
+      im.push(buffer[i]);
+    }
+
+    if (quantityName === 'frequency') {
+      reBuffer.push(re);
+      imBuffer.push(im);
+    } else {
+      reBuffer.push(re.reverse());
+      imBuffer.push(im.reverse().map((z) => -z));
+    }
+  }
+
+  let data: any = {
+    z: reBuffer,
+    minZ,
+    maxZ,
+  };
+  const axis = ['X', 'Y'];
+  for (let i = 0; i < axis.length; i++) {
+    let n = dimensions[i].count;
+    let incr = dimensions[i].increment.magnitude;
+    let origin = dimensions[i].originOffset.magnitude;
+    let offset = dimensions[i].coordinatesOffset.magnitude;
+
+    const axe = axis[i];
+    if (quantityName === 'frequency') {
+      data[`min${axe}`] = 0 + (offset / origin) * 1000000;
+      data[`max${axe}`] = n * (incr / origin) * 1000000;
+    } else {
+      data[`min${axe}`] = origin;
+      data[`max${axe}`] = n * incr;
+    }
+  }
+
   return data;
 }

@@ -1,5 +1,5 @@
 interface Jcamp {
-  [index: string]: BufferSource | Uint8Array;
+  [index: string]: string;
 }
 
 declare module 'jcamp-data-test' {

@@ -9,11 +9,11 @@ import { getFileSignature } from '../utilities/files/getFileSignature';
 import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
 import { isString } from '../utilities/tools/isString';
 
+import { readJDF } from './readJDF';
 import { readJcamp } from './readJcamp';
 import { readNMReData } from './readNMReData';
 import { readNmrium } from './readNmrium';
 import { readZip } from './readZip';
-// import { readJDF } from './readJDF';
 
 /**
  * read nmr data based on the file extension
@@ -49,11 +49,12 @@ async function process(
     case FILES_TYPES.JDX:
     case FILES_TYPES.DX:
       return readJcamp(binary, options);
-    // case FILES_TYPES.JDF:
-    //   if (typeof file.binary !== 'string') {
-    //     return { spectra: [readJDF(file.binary, { file.name, ...options })] };
-    //   }
-    //   break;
+    case FILES_TYPES.JDF:
+      if (typeof file.binary !== 'string') {
+        return readJDF(file.binary, { name: file.name, ...options });
+      } else {
+        throw new Error('The jdf binary should be an ArrayBuffer');
+      }
     case FILES_TYPES.ZIP:
       return readZip(binary, options);
     case FILES_TYPES.NMREDATA:

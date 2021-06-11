@@ -7,16 +7,16 @@ declare module 'nmr-parser' {
   }
 
   function fromBruker(
-    zipFile: BufferSource | string | Uint8Array,
+    zipFile: ArrayBuffer | string,
     options: Partial<Options>,
   ): Promise<Array<any>>;
   
   function fromJCAMP(
-    buffer: BufferSource | Uint8Array,
+    buffer: string | ArrayBuffer,
     options?: any, 
   ): Array<any>;
 
   function fromJEOL(
-    buffer: BufferSource | Uint8Array
+    buffer: ArrayBuffer,
   ): any;
 }

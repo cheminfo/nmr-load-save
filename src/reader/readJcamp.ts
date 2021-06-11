@@ -4,13 +4,13 @@ import { Options } from '../../types/Options';
 import { Output } from '../../types/Output';
 import { formatSpectra } from '../utilities/formatSpectra';
 
-type Text = BufferSource | string | Uint8Array;
-
+type Text = string | ArrayBuffer;
 export function readJcamp(text: Text, options: Partial<Options> = {}): Output {
   let output: any = { spectra: [], molecules: [] };
 
   let spectra = fromJCAMP(
-    typeof text === 'object' ? text : Buffer.from(text, 'utf8'),
+    text,
+    // typeof text === 'object' ? text : Buffer.from(text, 'utf8'),
     {
       ...{
         noContour: true,

@@ -1,6 +1,5 @@
 import { bruker } from 'bruker-data-test';
 import { jcamp } from 'jcamp-data-test';
-import { nmredata } from 'nmredata-data-test';
 
 import { isSpectrum2D } from '../../utilities/tools/isSpectrum2D';
 import { read } from '../read';

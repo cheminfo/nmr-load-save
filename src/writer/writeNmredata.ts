@@ -71,7 +71,7 @@ async function addNMReDATA(
   oclMolecule.addImplicitHydrogens();
   const groupedDiaIDs = getGroupedDiastereotopicAtomIDs(oclMolecule);
 
-  let labels = getLabels(data, { groupedDiaIDs, molecule });
+  let labels = getLabels(data, { groupedDiaIDs, molecule: oclMolecule });
 
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;
   sdfResult += putTag(data, 'temperature', { prefix });

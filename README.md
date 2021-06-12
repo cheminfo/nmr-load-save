@@ -7,8 +7,6 @@
   <img alt="NMReDATA" src="images/readDiagram.png">
 </p>
 
-
-
 ## Installation
 
 `$ npm i nmr-load-save`
@@ -17,16 +15,24 @@
 
 ```js
 import { readFileSyn } from 'fs';
-import { read } from 'nmr-load-save';
+import { read, writeNmredata } from 'nmr-load-save';
 
-const data = readFileSync('dataPath');
+const binary = readFileSync('dataPath');
 // we can read a zip, jdx, nmredata, nmrium file extensions
-read({name, binary: data}) {
-  // based on extension we should try to guess the format
+read({name, binary}) {
+  // based on extension we choose the format processor
   return {
     spectra: [],
     molecules: [],
   }
+}
+
+// we can create nmredata from the output format of read function
+writeNmredata({
+  spectra: [],
+  molecules: [],
+}) {
+  //it returns a jszip instances with the nmrRecord
 }
 
 ```

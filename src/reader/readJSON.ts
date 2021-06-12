@@ -33,10 +33,11 @@ export async function readJSON(text: Text, options: Options): Promise<Output> {
   return { ...data, ...{ spectra }};
 }
 
-function addJcampFromURL(spectra: any, jcampURL: any, datum: any, options: Options) {
-  void readJcampFromURL(jcampURL, options).then((result) => {
+async function addJcampFromURL(spectra: any, jcampURL: any, datum: any, options: Options) {
+  const result = await readJcampFromURL(jcampURL, options);
+  if (result) {
     for (let spectrum of result.spectra) {
       spectra.push(spectrum);
     }
-  });
+  }
 }

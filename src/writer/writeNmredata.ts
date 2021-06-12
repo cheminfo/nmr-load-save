@@ -34,7 +34,7 @@ const tags: Tags = {
   id: 'ID',
 };
 
-export async function nmriumToNmredata(state: State, options: addNMReDataOptions) {
+export async function writeNmredata(state: State, options: any = {}): Promise<JSZipType> {
   const { spectra: data, molecules } = state || {
     spectra: [],
     molecules: [],
@@ -49,7 +49,6 @@ export async function nmriumToNmredata(state: State, options: addNMReDataOptions
     });
   }
 
-  if (!molecules.length) await addNMReDATA(data, nmrRecord, options);
   return nmrRecord;
 }
 

@@ -2,7 +2,7 @@ import { Spectrum2D } from '../../types/Spectra/Spectrum2D';
 
 import generateID from './generateID';
 
-export function formatSpectrum2D(options: any): Spectrum2D {
+export function formatSpectrum2D(spectrumData: any): Spectrum2D {
   const {
     id = generateID(),
     meta = {},
@@ -11,7 +11,7 @@ export function formatSpectrum2D(options: any): Spectrum2D {
     source = {},
     filters = [],
     zones = [],
-  } = options;
+  } = spectrumData;
 
   const spectrum: any = { id, meta, filters };
 
@@ -40,7 +40,7 @@ export function formatSpectrum2D(options: any): Spectrum2D {
 
   spectrum.display = Object.assign(
     {
-      name: options.display?.name ? options.display.name : generateID(),
+      name: spectrumData.display?.name ? spectrumData.display.name : generateID(),
       positiveColor: 'red',
       negativeColor: 'blue',
       isPositiveVisible: true,
@@ -48,10 +48,10 @@ export function formatSpectrum2D(options: any): Spectrum2D {
       isVisible: true,
       dimension: 2,
     },
-    options.display,
+    spectrumData.display,
   );
 
-  let { data = dependentVariables[0].components } = options;
+  let { data = dependentVariables[0].components } = spectrumData;
 
   spectrum.data = {
     ...{

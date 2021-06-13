@@ -4,7 +4,7 @@ import { Spectrum1D } from '../../types/Spectra/Spectrum1D';
 import generateID from './generateID';
 import { getData } from './utility';
 
-export function formatSpectrum1D(options: any): Spectrum1D {
+export function formatSpectrum1D(spectrumData: any): Spectrum1D {
   const {
     id = generateID(),
     shiftX = 0,
@@ -14,7 +14,7 @@ export function formatSpectrum1D(options: any): Spectrum1D {
     info = {},
     source = {},
     dependentVariables = [],
-  } = options;
+  } = spectrumData;
   let spectrum: any = { id, shiftX, meta, filters };
 
   spectrum.source = {
@@ -31,7 +31,7 @@ export function formatSpectrum1D(options: any): Spectrum1D {
 
   spectrum.originalInfo = spectrum.info;
 
-  let { data = getData(dependentVariables[0].components) } = options;
+  let { data = getData(dependentVariables[0].components) } = spectrumData;
 
   if (data.im) info.isComplex = true;
   if (Array.isArray(info.nucleus)) info.nucleus = info.nucleus[0];
@@ -58,14 +58,14 @@ export function formatSpectrum1D(options: any): Spectrum1D {
 
   spectrum.display = Object.assign(
     {
-      name: options.display?.name ? options.display.name : id,
+      name: spectrumData.display?.name ? spectrumData.display.name : id,
       color: 'black',
       isVisible: true,
       isPeaksMarkersVisible: true,
       isRealSpectrumVisible: true,
       isVisibleInDomain: true,
     },
-    options.display,
+    spectrumData.display,
   )
 
   spectrum.originalData = spectrum.data;
@@ -74,12 +74,12 @@ export function formatSpectrum1D(options: any): Spectrum1D {
 
   spectrum.integrals = {
     ...{ values: [], options: { sum: 100 } },
-    ...options.integrals,
+    ...spectrumData.integrals,
   };
 
   spectrum.ranges = {
     ...{ values: [], options: { sum: 100 } },
-    ...options.ranges,
+    ...spectrumData.ranges,
   };
 
   spectrum.data.y = spectrum.data.re;

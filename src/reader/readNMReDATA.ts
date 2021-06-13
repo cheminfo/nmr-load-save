@@ -3,18 +3,24 @@ import type { JSZipObject } from 'jszip';
 import { NmrRecord, parseSDF } from 'nmredata';
 
 import { LoadedFiles } from '../../types/LoadedFiles';
-import { Options } from '../../types/Options';
+import { NmredataParsingOptions } from '../../types/Options/NmredataParsingOptions';
 import { Output } from '../../types/Output';
+import { Source } from '../../types/Source';
 import { isSpectrum2D } from '../utilities/tools/isSpectrum2D';
 import { addRanges } from '../utilities/tools/nmredata/addRanges';
 import { addZones } from '../utilities/tools/nmredata/addZones';
 
 import { readBrukerZip } from './readBrukerZip';
-import { readJcamp } from './readJcamp';
+import { readJcamp, readJcampFromURL } from './readJcamp';
 
-interface ZipFiles { [key: string]: JSZipObject }
+interface ZipFiles {
+  [key: string]: JSZipObject;
+}
 
-export async function readNMReDataFiles(files: ZipFiles, options: Options) {
+export async function readNMReDataFiles(
+  files: ZipFiles,
+  options: NmredataParsingOptions,
+) {
   const sdfFiles = await getSDF(files);
   const jsonData = await NmrRecord.toJSON({
     sdf: sdfFiles[0],
@@ -29,9 +35,7 @@ export async function readNMReDataFiles(files: ZipFiles, options: Options) {
   };
 
   for (const data of spectra) {
-    const { file, jcampURL } = data.source;
-
-    let { spectra } = await getSpectra(file, { jcampURL });
+    let { spectra } = await getSpectra(data.source, options);
 
     for (const spectrum of spectra) {
       const { info } = spectrum;
@@ -39,7 +43,7 @@ export async function readNMReDataFiles(files: ZipFiles, options: Options) {
       if (info.isFid) continue;
 
       if (isSpectrum2D(spectrum)) {
-        addZones(data.signals, spectrum, options);
+        addZones(data.signals, spectrum);
       } else {
         addRanges(data.signals, spectrum);
       }
@@ -50,27 +54,46 @@ export async function readNMReDataFiles(files: ZipFiles, options: Options) {
   return nmrium;
 }
 
-export async function readNMReData(file: LoadedFiles, options: Options = {}) {
+export async function readNMReData(
+  file: LoadedFiles,
+  options: NmredataParsingOptions = {},
+) {
   const { base64 } = options;
   const jszip = new Jszip();
   const zip = await jszip.loadAsync(file.binary, { base64 });
   return readNMReDataFiles(zip.files, options);
 }
 
-async function getSpectra(file: LoadedFiles, options: Partial<Options> = {}) {
-  const {
-    xy = true,
-    noContours = true,
-    keepOriginal = true,
-  } = options;
+async function getSpectra(
+  source: Source,
+  options: NmredataParsingOptions = {},
+) {
+  const { file, jcampURL } = source;
+  const { brukerParsingOptions, jcampParsingOptions } = options;
+
+  if (jcampURL) {
+    return readJcampFromURL(jcampURL, {
+      ...{ xy: true, noContours: true },
+      ...jcampParsingOptions,
+    });
+  }
+
+  if (!file) return { spectra: [], molecules: [] };
   switch (file.extension) {
     case 'jdx':
     case 'dx':
-      return readJcamp(file.binary, { xy, noContours });
+    case 'jcamp':
+      return readJcamp(file.binary, {
+        ...{ xy: true, noContours: true },
+        ...jcampParsingOptions,
+      });
     case 'zip':
-      return readBrukerZip(file.binary, { xy, noContours, keepOriginal });
+      return readBrukerZip(file.binary, {
+        ...{ xy: true, noContours: true, keepOriginal: true },
+        ...brukerParsingOptions,
+      });
     default:
-      return { spectra: [], molecules: [] };
+      throw new Error('There is not a supported source');
   }
 }
 

@@ -12,19 +12,24 @@ interface ComputeFromToOptions {
   frequency?: number;
 }
 
-export function addRanges(signals: Array<any>, datum: Spectrum1D): void {
+export function addRanges(signals: Array<any>, datum: Spectrum1D, options: any = {}): void {
   let ranges = [];
+  const { shiftX = 0 } = options;
   const { baseFrequency: frequency = 500 } = datum.info;
   for (const signal of signals) {
     const { jCoupling: j, delta, diaID = [], multiplicity, integral } = signal;
-    const fromTo = computeFromTo({ delta, j, frequency });
+    const { from, to } = computeFromTo({ delta, j, frequency });
     ranges.push({
-      ...fromTo,
+      to,
+      from,
+      originFrom: from + shiftX,
+      originTo: to + shiftX,
       integral,
       signal: [
         {
           j,
           delta,
+          originDelta: delta + shiftX,
           diaID,
           multiplicity,
         },

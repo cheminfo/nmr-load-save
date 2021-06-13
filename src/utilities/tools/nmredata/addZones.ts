@@ -1,5 +1,4 @@
 import { ObjectXY } from '../../../../types/ObjectXY';
-import { Options } from '../../../../types/Options';
 import { Signal2D } from '../../../../types/Signals/Signal2D';
 import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
 import { Zone } from '../../../../types/Zones/Zone';
@@ -11,7 +10,7 @@ const defaultShift: ObjectXY = { x: 0, y: 0 };
 export function addZones(
   signals: Array<any>,
   datum: Spectrum2D,
-  options: Options = {},
+  options: any = {},
 ) {
   let zones: any[] = [];
   const { shift = defaultShift } = options;

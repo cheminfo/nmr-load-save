@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
-import { writeNmredata } from '../writeNmredata';
-import { read } from '../../reader/read';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
+
 import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
+import { read } from '../../reader/read';
+import { writeNmredata } from '../writeNmredata';
 
 describe('writeNmredata', () => {
   it('use nmrium file', async () => {
@@ -12,6 +12,6 @@ describe('writeNmredata', () => {
     let spectra = data.spectra[0] as Spectrum1D;
     const nmredata = await writeNmredata(data);
     const keys = Object.keys(nmredata.files);
-    expect(keys.includes('nmredata.sdf')).toBe(true);
+    expect(keys).toContain('nmredata.sdf');
   });
 });

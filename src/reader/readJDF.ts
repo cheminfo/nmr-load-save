@@ -2,7 +2,7 @@ import { fromJEOL } from 'nmr-parser';
 
 import { Data1D } from '../../types/Data1D';
 import { Data2D } from '../../types/Data2D';
-import { Options } from '../../types/Options';
+import { Options } from '../../types/Options/Options';
 import { formatSpectra } from '../utilities/formatSpectra';
 
 export function readJDF(jdf: ArrayBuffer, options: Options) {

@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
 
 import { LoadedFiles } from '../../types/LoadedFiles';
-import { Options } from '../../types/Options';
+import { Options } from '../../types/Options/Options';
 import { Output } from '../../types/Output';
 import { FILES_TYPES } from '../utilities/files/constants';
 import { getFileExtension } from '../utilities/files/getFileExtension';
@@ -10,10 +10,9 @@ import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
 import { read } from './read';
 import { readBrukerZip } from './readBrukerZip';
 
-
 export async function readZip(
   zipFile: string | ArrayBuffer,
-  options: Partial<Options> = {},
+  options: Options = {},
 ): Promise<Output> {
   const { base64 } = options;
   const jszip = new JSZip();
@@ -34,7 +33,14 @@ export async function readZip(
   );
 
   if (hasBruker) {
-    let partialResult: Output = await readBrukerZip(zipFile, options);
+    const { brukerParsingOptions } = options;
+    let partialResult: Output = await readBrukerZip(
+      zipFile,
+      {
+        base64,
+        ...brukerParsingOptions,
+      }
+    );
     if (partialResult.spectra) result.spectra.push(...partialResult.spectra);
   }
 
@@ -44,19 +50,15 @@ export async function readZip(
 
   if (hasOthers) {
     const zipFiles: Array<any> = Object.values(zip.files);
-    for (let extension of uniqueFileExtensions) {
-      if (!FILES_TYPES[extension.toUpperCase()]) continue;
-
-      const selectedFilesByExtensions = zipFiles.filter(
-        (file: any) => getFileExtension(file.name) === extension,
-      );
-      let files: LoadedFiles[] = await loadFilesFromZip(selectedFilesByExtensions, {
-        asBuffer: extension === FILES_TYPES.MOL ? false : true,
-      });
-      let partialResult: Output = await read(files, options);
-      result.spectra.push(...partialResult.spectra);
-      result.molecules.push(...partialResult.molecules);
-    }
+    const selectedFilesByExtensions = zipFiles.filter((file: any) =>
+      FILES_TYPES[getFileExtension(file.name).toUpperCase()],
+    );
+    let files: LoadedFiles[] = await loadFilesFromZip(
+      selectedFilesByExtensions,
+    );
+    let partialResult: Output = await read(files, options);
+    result.spectra.push(...partialResult.spectra);
+    result.molecules.push(...partialResult.molecules);
   }
 
   return result;

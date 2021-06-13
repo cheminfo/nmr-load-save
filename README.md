@@ -4,7 +4,7 @@
   Package to load and save NMR spectra.
 </p>
 <p align="center">
-  <img alt="NMReDATA" src="images/readDiagram.png">
+  <img alt="NMReDATA" src="images/readDiagram.svg">
 </p>
 
 ## Installation

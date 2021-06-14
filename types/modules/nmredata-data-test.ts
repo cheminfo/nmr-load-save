@@ -1,5 +1,5 @@
 interface Nmredata {
-  [index: string]: BufferSource | Uint8Array;
+  [index: string]: string | ArrayBuffer;
 }
 
 declare module 'nmredata-data-test' {

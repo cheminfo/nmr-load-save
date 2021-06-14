@@ -36,7 +36,7 @@ export async function readNMReDataFiles(
 
   for (const data of spectra) {
     let { spectra } = await getSpectra(data.source, options);
-
+    console.log('spectra ' spectra)
     for (const spectrum of spectra) {
       const { info } = spectrum;
 
@@ -79,6 +79,7 @@ async function getSpectra(
   }
 
   if (!file) return { spectra: [], molecules: [] };
+
   switch (file.extension) {
     case 'jdx':
     case 'dx':

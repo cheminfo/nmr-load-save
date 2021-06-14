@@ -1,6 +1,4 @@
 import type { JSZipObject } from 'jszip';
-
-import { LoadFilesFromZipOptions } from '../../../types/LoadFilesFromZipOptions';
 import { LoadedFiles } from '../../../types/LoadedFiles';
 
 import { FILES_TYPES } from './constants';
@@ -8,6 +6,10 @@ import { getFileExtension } from './getFileExtension';
 import { getFileName } from './getFileName';
 
 type Binary = Uint8Array | string;
+
+interface LoadFilesFromZipOptions {
+  asBuffer?: boolean;
+}
 
 export async function loadFilesFromZip(
   files: JSZipObject[],

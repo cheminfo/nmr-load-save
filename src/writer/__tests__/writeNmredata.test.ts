@@ -9,9 +9,11 @@ describe('writeNmredata', () => {
     const path = './src/writer/__tests__/ethylbenzene.nmrium';
     const binary = readFileSync(path);
     const data = await read([{ name: path, binary }]);
+    console.log(Object.keys(data.spectra[0]));
     let spectra = data.spectra[0] as Spectrum1D;
     const nmredata = await writeNmredata(data);
     const keys = Object.keys(nmredata.files);
+    console.log(keys)
     expect(keys).toContain('nmredata.sdf');
   });
 });

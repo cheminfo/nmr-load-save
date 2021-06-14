@@ -9,7 +9,7 @@ export interface Spectrum2D extends Spectrum {
   meta: any;
   filters: Array<any>;
   data: Data2D;
-  info: Partial<Info2D>;
-  originalInfo?: Partial<Info2D>;
+  info: Info2D;
+  originalInfo?: Info2D;
   originalData: Data2D; 
 }

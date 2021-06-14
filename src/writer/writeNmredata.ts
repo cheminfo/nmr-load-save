@@ -70,7 +70,7 @@ async function addNMReDATA(
   sdfResult += oclMolecule.toMolfile();
   oclMolecule.addImplicitHydrogens();
   const groupedDiaIDs = getGroupedDiastereotopicAtomIDs(oclMolecule);
-
+  console.log(data)
   let labels = getLabels(data, { groupedDiaIDs, molecule: oclMolecule });
 
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;

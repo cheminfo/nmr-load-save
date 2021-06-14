@@ -11,6 +11,7 @@ export function readJDF(jdf: ArrayBuffer, options: Options) {
 
   let converted = fromJEOL(jdf);
   let info = converted.description;
+  console.log('information ', info.dimension);
   let metadata = info.metadata;
   const acquisitionMode = 0;
   const experiment = info.dimension === 1 ? '1d' : '2d';
@@ -24,35 +25,40 @@ export function readJDF(jdf: ArrayBuffer, options: Options) {
 
   const spectralWidthClipped = converted.application.spectralWidthClipped;
 
-  let data = [];
+  let data;
   if (converted.dependentVariables) {
     if (info.dimension === 1) {
-      data.push(format1D(converted));
+      data = format1D(converted);
     } else if (info.dimension === 2) {
-      data.push(format2D(converted));
+      data = format2D(converted);
     }
   }
-  output.spectra = {
-    data,
-    info: {
-      acquisitionMode,
-      experiment,
-      type,
-      nucleus,
-      numberOfPoints,
-      acquisitionTime,
-      baseFrequency,
-      frequencyOffset,
-      spectralWidthClipped,
+  output.spectra = [
+    {
+      data,
+      info: {
+        ...info,
+        ...{
+          acquisitionMode,
+          experiment,
+          type,
+          nucleus,
+          numberOfPoints,
+          acquisitionTime,
+          baseFrequency,
+          frequencyOffset,
+          spectralWidthClipped,
+        },
+      },
+      meta: metadata,
+      source: {
+        name,
+        extension: 'jdf',
+        binary: jdf,
+      },
+      ...options,
     },
-    meta: metadata,
-    source: {
-      name,
-      extension: 'jdf',
-      binary: jdf,
-    },
-    ...options,
-  }
+  ];
   return formatSpectra(output);
 }
 

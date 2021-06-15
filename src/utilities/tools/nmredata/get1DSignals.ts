@@ -6,9 +6,7 @@ import { isSpectrum2D } from '../isSpectrum2D';
 
 import { addSource } from './addSource';
 import { getToFix } from './getToFix';
-
-
-
+import { checkSpectrum } from './checkSpectrum';
 
 export async function get1DSignals(
   data: Spectra,
@@ -21,6 +19,9 @@ export async function get1DSignals(
   for (let spectrum of data) {
     const { info } = spectrum;
     if (info.isFid || isSpectrum2D(spectrum)) continue;
+
+    if (!checkSpectrum(spectrum, labels.byDiaID)) continue;
+
     let partTag = '';
     let ranges = spectrum.ranges.values || [];
 
@@ -83,9 +84,7 @@ export async function get1DSignals(
           if (Array.isArray(jCoupling) && jCoupling.length) {
             let separator = ', J=';
             for (const jcoupling of jCoupling) {
-              partTag += `${separator}${Number(jcoupling.coupling).toFixed(
-                3,
-              )}`;
+              partTag += `${separator}${Number(jcoupling.coupling).toFixed(3)}`;
               if (jcoupling.diaID) {
                 let { diaID } = jcoupling;
                 if (!Array.isArray(diaID)) diaID = [diaID];

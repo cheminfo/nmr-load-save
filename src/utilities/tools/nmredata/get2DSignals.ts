@@ -9,7 +9,7 @@ import { addSource } from './addSource';
 import { getCouplingObserved } from './getCouplingObserved';
 import { getToFix } from './getToFix';
 
-
+import { checkSpectrum } from './checkSpectrum';
 
 const isArray = Array.isArray;
 
@@ -20,6 +20,9 @@ export async function get2DSignals(data: Spectra, nmrRecord: JSZipType, options:
   const prefix = `\n> <NMREDATA_2D_`;
   for (let spectrum of data) {
     if (!isSpectrum2D(spectrum)) continue;
+
+    if (!checkSpectrum(spectrum, byDiaID)) continue;
+
     let partTag = '';
     const { info, source } = spectrum;
     let { nucleus, experiment, pulseSequence } = info;

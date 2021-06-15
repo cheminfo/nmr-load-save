@@ -20,7 +20,7 @@ export async function readJSON(text: Text, options: Options = {}): Promise<Outpu
     if (datum.source.jcampURL != null) {
       const { jcampParsingOptions } = options;
       promises.push(
-        addJcampFromURL(spectra, datum.source.jcampURL, jcampParsingOptions),
+        addJcampFromURL(spectra, datum.source.jcampURL, datum, jcampParsingOptions),
       );
     } else {
       const { dimension } = datum.info;
@@ -35,11 +35,11 @@ export async function readJSON(text: Text, options: Options = {}): Promise<Outpu
   return { ...data, ...{ spectra }};
 }
 
-async function addJcampFromURL(spectra: any, jcampURL: any, options?: JcampParsingOptions) {
+async function addJcampFromURL(spectra: any, jcampURL: any, datum: any, options?: JcampParsingOptions) {
   const result = await readJcampFromURL(jcampURL, options);
   if (result) {
     for (let spectrum of result.spectra) {
-      spectra.push(spectrum);
+      spectra.push({ ...spectrum, ...datum });
     }
   }
 }

@@ -3,7 +3,7 @@ import { Peak2D } from '../Peaks/Peak2D';
 
 interface SignalAxis {
   delta: number;
-  diaID?: Array<string>;
+  diaID?: string[];
   originDelta: number;
 }
 

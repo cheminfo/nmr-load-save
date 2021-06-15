@@ -1,4 +1,4 @@
-import { Jcouplings } from '../Jcouplings';
+import { Jcoupling } from '../Jcoupling';
 import { Signal } from './Signal';
 
 export interface Signal1D extends Signal {
@@ -6,6 +6,6 @@ export interface Signal1D extends Signal {
   diaID: Array<string>;
   originDelta?: number;
   multiplicity: string;
-  j: Jcouplings
+  j: Jcoupling[];
   peak?: Array<Partial<{ x: number; intensity: number; width: number }>>;
 }

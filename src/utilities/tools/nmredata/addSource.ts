@@ -1,4 +1,5 @@
 import Jszip from 'jszip';
+import fetch from 'cross-fetch';
 
 import { LoadedFiles } from '../../../../types/LoadedFiles';
 import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';
@@ -26,7 +27,15 @@ export async function addSource(
   let tag = '';
   const dimension = `${spectrum.info.dimension}d`;
 
-  if (file) {
+  if (jcampURL) {
+    void (await fetch(jcampURL).then(async (jcamp) => {
+      if (!jcamp) return;
+      let name = jcampURL.split('/').slice(-1);
+      const path = `jcamp/${dimension}/${name[0]}`;
+      tag += `\nJcamp_Location=file:${path}\\`;
+      nmrRecord.file(path, await jcamp.arrayBuffer());
+    }));
+  } else if (file) {
     switch (file.extension) {
       case 'jdx':
       case 'dx':
@@ -56,14 +65,6 @@ export async function addSource(
       default:
         new Error(`This extension is not supported`);
     }
-  } else if (jcampURL) {
-    void (await fetch(jcampURL).then(async (jcamp) => {
-      if (!jcamp) return;
-      let name = jcampURL.split('/').slice(-1);
-      const path = `jcamp/${dimension}/${name[0]}`;
-      tag += `\nJcamp_Location=file:${path}\\`;
-      nmrRecord.file(path, await jcamp.arrayBuffer());
-    }));
   }
 
   return tag;

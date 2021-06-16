@@ -1,6 +1,6 @@
 {
   "name": "nmr-load-save",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Package to load and save NMR spectra",
   "main": "./lib/src/index.js",
   "module": "./lib-esm/src/index.js",

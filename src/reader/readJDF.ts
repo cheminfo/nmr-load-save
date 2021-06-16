@@ -72,27 +72,29 @@ function format1D(result: any): Data1D {
   let offset = dimension.coordinatesOffset.magnitude;
 
   let buffer = dependentVariables[0].components[0];
-  let re = [];
-  let im = [];
-  for (let i = buffer.length - 1; i > 0; i -= 2) {
-    re.push(buffer[i - 1]);
-    im.push(buffer[i]);
-  }
 
   let data: any = {};
+  const bufferLength = buffer.length;
+  data.re = new Float64Array(bufferLength / 2);
+  data.im = new Float64Array(bufferLength / 2);
+
   let i, x0;
   switch (quantityName) {
     case 'frequency':
       x0 = 0 + (offset / origin) * 1000000;
       i = (incr / origin) * 1000000;
-      data.re = re;
-      data.im = im;
+      for (let i = bufferLength - 1, index = 0; i > 0; i -= 2) {
+        data.re[index] = buffer[i - 1];
+        data.im[index++] = buffer[i];
+      }
       break;
     case 'time':
       x0 = origin;
       i = incr;
-      data.re = re.reverse();
-      data.im = im.reverse().map((z) => -z);
+      for (let i = 1, index = 0; i < bufferLength; i += 2) {
+        data.re[index] = buffer[i - 1];
+        data.im[index++] = buffer[i];
+      }
       break;
     default:
       break;
@@ -117,22 +119,27 @@ function format2D(result: any): Data2D {
   let maxZ = Number.MIN_SAFE_INTEGER;
   let minZ = Number.MAX_SAFE_INTEGER;
   for (const buffer of dependentVariables[0].components) {
-    let re = [];
-    let im = [];
-    for (let i = buffer.length - 1; i > 0; i -= 2) {
+    let re = new Float64Array(buffer.length / 2);
+    let im = new Float64Array(buffer.length / 2);
+    for (let i = buffer.length - 1, index = 0; i > 0; i -= 2) {
       let realValue = buffer[i - 1];
       if (realValue > maxZ) maxZ = realValue;
       if (realValue < minZ) minZ = realValue;
-      re.push(realValue);
-      im.push(buffer[i]);
+      re[index] = realValue;
+      im[index++] = buffer[i];
     }
 
     if (quantityName === 'frequency') {
       reBuffer.push(re);
       imBuffer.push(im);
     } else {
+      const len = re.length;
+      let newIm = new Float64Array(im.length);
+      for (let i = 0, j = len - 1; i < len; i++) {
+        newIm[i] = -im[j--];
+      }
       reBuffer.push(re.reverse());
-      imBuffer.push(im.reverse().map((z) => -z));
+      imBuffer.push(newIm);
     }
   }
 

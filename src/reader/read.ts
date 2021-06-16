@@ -7,7 +7,6 @@ import { FILES_TYPES, FILES_SIGNATURES } from '../utilities/files/constants';
 import { getFileExtension } from '../utilities/files/getFileExtension';
 import { getFileSignature } from '../utilities/files/getFileSignature';
 import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
-import { isString } from '../utilities/tools/isString';
 
 import { readJDF } from './readJDF';
 import { readJSON } from './readJSON';
@@ -63,18 +62,20 @@ async function process(
       return readNMReData(file, options);
     case FILES_TYPES.NMRIUM:
     case FILES_TYPES.JSON:
-      if (!isString(binary)) {
-         const fileSignature = getFileSignature(binary);
+      if (typeof binary === 'string') {
+        return readJSON(binary);
+      } else {
+        const fileSignature = getFileSignature(binary);
         if (fileSignature === FILES_SIGNATURES.ZIP) {
           const unzipResult = await JSZip.loadAsync(binary);
-          const files = await loadFilesFromZip(Object.values(unzipResult.files));
+          const files = await loadFilesFromZip(
+            Object.values(unzipResult.files),
+          );
           return process(files[0], options);
         } else {
           const decoder = new TextDecoder('utf8');
           return readJSON(decoder.decode(binary));
         }
-      } else {
-        return readJSON(binary);
       }
     default:
       throw new Error(`The extension ${extension} is not supported`);

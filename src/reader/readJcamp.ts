@@ -3,8 +3,8 @@ import { fromJCAMP } from 'nmr-parser';
 
 import { JcampParsingOptions } from '../../types/Options/JcampParsingOptions';
 import { Output } from '../../types/Output';
-import generateID from '../utilities/generateID';
 import { formatSpectra } from '../utilities/formatSpectra';
+import generateID from '../utilities/generateID';
 
 type Text = string | ArrayBuffer;
 export function readJcamp(text: Text, options: JcampParsingOptions = {}): Output {
@@ -22,7 +22,7 @@ export function readJcamp(text: Text, options: JcampParsingOptions = {}): Output
       ...options,
     },
   );
-  
+
   const { name = `jcamp${generateID()}`} = options;
   const { source = { file: { name, extension: 'jdx', binary: text} } } = options;
   for (let entry of entries) {

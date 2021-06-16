@@ -1,7 +1,9 @@
+import { readFileSync } from 'fs';
+
 import { bruker } from 'bruker-data-test';
 import { jcamp } from 'jcamp-data-test';
-import { nmredata } from 'nmredata-data-test';
 import { experiments as jeol } from 'jeol-data-test';
+import { nmredata } from 'nmredata-data-test';
 
 import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
 import { Spectrum2D } from '../../../types/Spectra/Spectrum2D';
@@ -47,7 +49,7 @@ describe('read by extension', () => {
     );
     expect(result.molecules).toHaveLength(1);
     expect(result.spectra).toHaveLength(2);
-    expect(result.molecules[0].molfile.includes('CCc1ccccc1')).toBe(true);
+    expect(result.molecules[0].molfile).toContain('CCc1ccccc1');
   });
 
   it('jeol', async () => {
@@ -61,4 +63,10 @@ describe('read by extension', () => {
     expect(spectrum.info.nucleus[1]).toStrictEqual('13C');
     expect(spectrum.data.z[0]).toHaveLength(4096);
   });
+
+  // it('nmrium fetch jcampURL', async () => {
+  //   const path = './src/reader/__tests__/ethylbenzene.json';
+  //   const binary = readFileSync(path);
+  //   const data = await read([{ name: path, binary }]);
+  // });
 });

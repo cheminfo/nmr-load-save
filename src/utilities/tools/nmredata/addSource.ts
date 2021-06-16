@@ -1,5 +1,5 @@
-import Jszip from 'jszip';
 import fetch from 'cross-fetch';
+import Jszip from 'jszip';
 
 import { LoadedFiles } from '../../../../types/LoadedFiles';
 import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';

@@ -1,4 +1,5 @@
 import type { JSZipObject } from 'jszip';
+
 import { LoadedFiles } from '../../../types/LoadedFiles';
 
 import { FILES_TYPES } from './constants';

@@ -11,7 +11,6 @@ export function readJDF(jdf: ArrayBuffer, options: Options) {
 
   let converted = fromJEOL(jdf);
   let info = converted.description;
-  console.log('information ', info.dimension);
   let metadata = info.metadata;
   const acquisitionMode = 0;
   const experiment = info.dimension === 1 ? '1d' : '2d';

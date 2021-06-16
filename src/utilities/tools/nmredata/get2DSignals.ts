@@ -6,10 +6,10 @@ import { Options } from '../../../../types/utilities/writeNmreData/Options';
 import { isSpectrum2D } from '../isSpectrum2D';
 
 import { addSource } from './addSource';
+import { checkSpectrum } from './checkSpectrum';
 import { getCouplingObserved } from './getCouplingObserved';
 import { getToFix } from './getToFix';
 
-import { checkSpectrum } from './checkSpectrum';
 
 const isArray = Array.isArray;
 

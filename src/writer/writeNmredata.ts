@@ -5,6 +5,7 @@ import { Molecule as OCLMolecule } from 'openchemlib/full';
 import { Output as State } from '../../types/Output';
 import { Spectra } from '../../types/Spectra/Spectra';
 import { ByDiaID } from '../../types/utilities/writeNmreData/ByDiaID';
+import generateID from '../utilities/generateID';
 import { get1DSignals } from '../utilities/tools/nmredata/get1DSignals';
 import { get2DSignals } from '../utilities/tools/nmredata/get2DSignals';
 import { getLabels } from '../utilities/tools/nmredata/getLabels';
@@ -39,7 +40,6 @@ export async function writeNmredata(state: State, options: any = {}): Promise<JS
     spectra: [],
     molecules: [],
   };
-
   let nmrRecord = new JSZip();
 
   for (const molecule of molecules) {
@@ -60,7 +60,7 @@ async function addNMReDATA(
   let {
     id,
     prefix = '\n> <NMREDATA_',
-    filename = 'nmredata',
+    filename = `nmredata ${generateID()}`,
     molecule,
   } = options;
 
@@ -70,7 +70,6 @@ async function addNMReDATA(
   sdfResult += oclMolecule.toMolfile();
   oclMolecule.addImplicitHydrogens();
   const groupedDiaIDs = getGroupedDiastereotopicAtomIDs(oclMolecule);
-  console.log(data)
   let labels = getLabels(data, { groupedDiaIDs, molecule: oclMolecule });
 
   sdfResult += `${prefix}VERSION>\n1.1\\\n`;

@@ -5,8 +5,8 @@ import { Options } from '../../../../types/utilities/writeNmreData/Options';
 import { isSpectrum2D } from '../isSpectrum2D';
 
 import { addSource } from './addSource';
-import { getToFix } from './getToFix';
 import { checkSpectrum } from './checkSpectrum';
+import { getToFix } from './getToFix';
 
 export async function get1DSignals(
   data: Spectra,

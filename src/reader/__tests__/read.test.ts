@@ -64,9 +64,10 @@ describe('read by extension', () => {
     expect(spectrum.data.z[0]).toHaveLength(4096);
   });
 
-  // it('nmrium fetch jcampURL', async () => {
-  //   const path = './src/reader/__tests__/ethylbenzene.json';
-  //   const binary = readFileSync(path);
-  //   const data = await read([{ name: path, binary }]);
-  // });
+  it('nmrium fetch jcampURL', async () => {
+    const path = './src/reader/__tests__/ethylbenzene.json';
+    const binary = readFileSync(path);
+    const data = await read([{ name: path, binary }]);
+    expect(data.spectra).toHaveLength(1);
+  });
 });

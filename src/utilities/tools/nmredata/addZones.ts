@@ -1,11 +1,17 @@
-import { ObjectXY } from '../../../../types/ObjectXY';
-import { Signal2D } from '../../../../types/Signals/Signal2D';
-import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
-import { Zone } from '../../../../types/Zones/Zone';
+import type { Signal2D, Spectrum2D, Zone } from 'cheminfo-types';
+
 import generateID from '../../generateID';
+
+interface ObjectXY {
+  [axis: string]: number;
+  y: number;
+  x: number;
+}
 
 const axisLabels: Array<string> = ['x', 'y'];
 const defaultShift: ObjectXY = { x: 0, y: 0 };
+
+
 
 export function addZones(
   signals: Array<any>,

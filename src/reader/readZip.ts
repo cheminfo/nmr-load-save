@@ -1,14 +1,15 @@
 import JSZip from 'jszip';
 
-import { LoadedFiles } from '../../types/LoadedFiles';
-import { Options } from '../../types/Options/Options';
-import { Output } from '../../types/Output';
+import type { LoadedFiles } from '../../types/LoadedFiles';
+import type { Options } from '../../types/Options/Options';
+import type { Output } from '../../types/Output';
 import { FILES_TYPES } from '../utilities/files/constants';
 import { getFileExtension } from '../utilities/files/getFileExtension';
 import { loadFilesFromZip } from '../utilities/files/loadFilesFromZip';
 
 import { read } from './read';
 import { readBrukerZip } from './readBrukerZip';
+
 
 export async function readZip(
   zipFile: string | ArrayBuffer,

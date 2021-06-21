@@ -1,8 +1,8 @@
 import JSZip from 'jszip';
 
-import { LoadedFiles } from '../../types/LoadedFiles';
-import { Options } from '../../types/Options/Options';
-import { Output } from '../../types/Output';
+import type { LoadedFiles } from '../../types/LoadedFiles';
+import type { Options } from '../../types/Options/Options';
+import type { Output } from '../../types/Output';
 import { FILES_TYPES, FILES_SIGNATURES } from '../utilities/files/constants';
 import { getFileExtension } from '../utilities/files/getFileExtension';
 import { getFileSignature } from '../utilities/files/getFileSignature';
@@ -26,7 +26,6 @@ export async function read(
   options: Partial<Options> = {},
 ): Promise<Output> {
   let result: any = { spectra: [], molecules: [] };
-
   files = !Array.isArray(files) ? [files] : files;
 
   for (let file of files) {

@@ -1,7 +1,6 @@
+import { Signal1D, Spectrum1D } from 'cheminfo-types';
 import { xyIntegration } from 'ml-spectra-processing';
 
-import { Signal1D } from '../../../types/Signals/Signal1D';
-import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
 import { signalKinds } from '../../constants/signalKinds';
 import generateID from '../generateID';
 

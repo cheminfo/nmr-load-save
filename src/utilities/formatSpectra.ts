@@ -1,4 +1,4 @@
-import { Output } from '../../types/Output';
+import type { Output } from '../../types/Output';
 
 import { formatSpectrum1D } from './formatSpectrum1D';
 import { formatSpectrum2D } from './formatSpectrum2D';

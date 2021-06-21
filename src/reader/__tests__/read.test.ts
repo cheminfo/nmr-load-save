@@ -1,12 +1,11 @@
 import { readFileSync } from 'fs';
 
 import { bruker } from 'bruker-data-test';
+import { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import { jcamp } from 'jcamp-data-test';
 import { experiments as jeol } from 'jeol-data-test';
 import { nmredata } from 'nmredata-data-test';
 
-import { Spectrum1D } from '../../../types/Spectra/Spectrum1D';
-import { Spectrum2D } from '../../../types/Spectra/Spectrum2D';
 import { read } from '../read';
 
 describe('read by extension', () => {

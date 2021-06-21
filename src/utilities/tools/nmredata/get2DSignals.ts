@@ -1,8 +1,8 @@
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import type JSZipType from 'jszip';
 
-import { Spectra } from '../../../../types/Spectra/Spectra';
-import { ByDiaID } from '../../../../types/utilities/writeNmreData/ByDiaID';
-import { Options } from '../../../../types/utilities/writeNmreData/Options';
+import type { AditionalInputForGetSignal } from '../../../../types/utilities/writeNmreData/AditionalInputForGetSignal';
+import type { ByDiaID } from '../../../../types/utilities/writeNmreData/ByDiaID';
 import { isSpectrum2D } from '../isSpectrum2D';
 
 import { addSource } from './addSource';
@@ -10,10 +10,15 @@ import { checkSpectrum } from './checkSpectrum';
 import { getCouplingObserved } from './getCouplingObserved';
 import { getToFix } from './getToFix';
 
-
 const isArray = Array.isArray;
 
-export async function get2DSignals(data: Spectra, nmrRecord: JSZipType, options: Options) {
+export type Spectra = Array<Spectrum1D | Spectrum2D>;
+
+export async function get2DSignals(
+  data: Spectra,
+  nmrRecord: JSZipType,
+  options: AditionalInputForGetSignal,
+) {
   const { byDiaID } = options.labels;
   let str = '';
   let nucleusRecorded = [];
@@ -70,10 +75,12 @@ function getAssignment(axis: any, labels: ByDiaID, toFix: number) {
   if (diaID) {
     if (!isArray(diaID)) diaID = [diaID];
     if (diaID.length < 1) return Number(delta).toFixed(toFix);
-    let label:string = diaID.map((diaID: string) => {
-      let label: string = labels[diaID].label;
-      return label;
-    }).join(',');
+    let label: string = diaID
+      .map((diaID: string) => {
+        let label: string = labels[diaID].label;
+        return label;
+      })
+      .join(',');
     return diaID.length > 1 ? `(${label})` : label;
   }
   return Number(delta).toFixed(toFix);

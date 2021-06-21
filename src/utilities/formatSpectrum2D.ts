@@ -1,4 +1,4 @@
-import { Spectrum2D } from '../../types/Spectra/Spectrum2D';
+import type { Spectrum2D } from 'cheminfo-types';
 
 import generateID from './generateID';
 
@@ -40,7 +40,9 @@ export function formatSpectrum2D(spectrumData: any): Spectrum2D {
 
   spectrum.display = Object.assign(
     {
-      name: spectrumData.display?.name ? spectrumData.display.name : generateID(),
+      name: spectrumData.display?.name
+        ? spectrumData.display.name
+        : generateID(),
       positiveColor: 'red',
       negativeColor: 'blue',
       isPositiveVisible: true,

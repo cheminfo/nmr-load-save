@@ -1,5 +1,5 @@
-import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';
-import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
+
 import { isSpectrum2D } from '../isSpectrum2D';
 
 interface SignalAxis {

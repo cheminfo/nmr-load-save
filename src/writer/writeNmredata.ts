@@ -1,9 +1,9 @@
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import JSZip from 'jszip';
 import { getGroupedDiastereotopicAtomIDs } from 'openchemlib-utils';
 import { Molecule as OCLMolecule } from 'openchemlib/full';
 
 import { Output as State } from '../../types/Output';
-import { Spectra } from '../../types/Spectra/Spectra';
 import { ByDiaID } from '../../types/utilities/writeNmreData/ByDiaID';
 import generateID from '../utilities/generateID';
 import { get1DSignals } from '../utilities/tools/nmredata/get1DSignals';
@@ -11,6 +11,8 @@ import { get2DSignals } from '../utilities/tools/nmredata/get2DSignals';
 import { getLabels } from '../utilities/tools/nmredata/getLabels';
 
 type JSZipType = typeof JSZip;
+
+type Spectra = Array<Spectrum1D | Spectrum2D>;
 
 interface addNMReDataOptions {
   id?: string;

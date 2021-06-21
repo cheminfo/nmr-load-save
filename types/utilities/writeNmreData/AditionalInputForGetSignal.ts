@@ -1,6 +1,6 @@
 import { Labels } from './Labels';
 
-export interface Options {
+export interface AditionalInputForGetSignal {
   prefix?: string;
   labels: Labels;
 }

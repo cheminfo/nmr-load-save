@@ -1,13 +1,14 @@
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import { getShortestPaths } from 'openchemlib-utils';
 
-import { Spectra } from '../../../../types/Spectra/Spectra';
-import { CreateLabelInput } from '../../../../types/utilities/writeNmreData/CreateLabelInput';
-import { GetLabelsOptions } from '../../../../types/utilities/writeNmreData/GetLabelsOptions';
-import { GetLabelsOutput } from '../../../../types/utilities/writeNmreData/GetLabelsOutput';
+import type { CreateLabelInput } from '../../../../types/utilities/writeNmreData/CreateLabelInput';
+import type { GetLabelsOptions } from '../../../../types/utilities/writeNmreData/GetLabelsOptions';
+import type { GetLabelsOutput } from '../../../../types/utilities/writeNmreData/GetLabelsOutput';
 
 import { flat2DSignals } from './flat2DSignals';
 import { getToFix } from './getToFix';
 
+type Spectra = Array<Spectrum1D | Spectrum2D>;
 
 export function getLabels(
   data: Spectra,

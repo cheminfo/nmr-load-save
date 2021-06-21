@@ -1,9 +1,8 @@
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import fetch from 'cross-fetch';
 import Jszip from 'jszip';
 
 import { LoadedFiles } from '../../../../types/LoadedFiles';
-import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';
-import { Spectrum2D } from '../../../../types/Spectra/Spectrum2D';
 
 type JSZipType = typeof Jszip;
 
@@ -14,7 +13,7 @@ interface Source {
 
 interface OptionsAddSource {
   spectrum: Spectrum1D | Spectrum2D;
-  source: Source;
+  source?: Source;
 }
 
 const jszip = new Jszip();
@@ -22,7 +21,7 @@ export async function addSource(
   nmrRecord: JSZipType,
   options: OptionsAddSource,
 ) {
-  const { spectrum, source } = options;
+  const { spectrum, source = {} } = options;
   const { file, jcampURL } = source;
   let tag = '';
   const dimension = `${spectrum.info.dimension}d`;

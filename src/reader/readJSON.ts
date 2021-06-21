@@ -1,14 +1,18 @@
-import { JcampParsingOptions } from '../../types/Options/JcampParsingOptions';
-import { Options } from '../../types/Options/Options';
-import { Output } from '../../types/Output';
+import type { JcampParsingOptions } from '../../types/Options/JcampParsingOptions';
+import type { Options } from '../../types/Options/Options';
+import type { Output } from '../../types/Output';
 import { formatSpectrum1D } from '../utilities/formatSpectrum1D';
 import { formatSpectrum2D } from '../utilities/formatSpectrum2D';
 
 import { readJcampFromURL } from './readJcamp';
 
+
 type Text = string;
 
-export async function readJSON(text: Text, options: Options = {}): Promise<Output> {
+export async function readJSON(
+  text: Text,
+  options: Options = {},
+): Promise<Output> {
   let output: any = { spectra: [], molecules: [] };
 
   const data = JSON.parse(text.toString());
@@ -20,7 +24,12 @@ export async function readJSON(text: Text, options: Options = {}): Promise<Outpu
     if (datum.source.jcampURL != null) {
       const { jcampParsingOptions } = options;
       promises.push(
-        addJcampFromURL(spectra, datum.source.jcampURL, datum, jcampParsingOptions),
+        addJcampFromURL(
+          spectra,
+          datum.source.jcampURL,
+          datum,
+          jcampParsingOptions,
+        ),
       );
     } else {
       const { dimension } = datum.info;
@@ -32,10 +41,15 @@ export async function readJSON(text: Text, options: Options = {}): Promise<Outpu
     }
   }
   await Promise.all(promises);
-  return { ...data, ...{ spectra }};
+  return { ...data, ...{ spectra } };
 }
 
-async function addJcampFromURL(spectra: any, jcampURL: any, datum: any, options?: JcampParsingOptions) {
+async function addJcampFromURL(
+  spectra: any,
+  jcampURL: any,
+  datum: any,
+  options?: JcampParsingOptions,
+) {
   const result = await readJcampFromURL(jcampURL, options);
   if (result) {
     for (let spectrum of result.spectra) {

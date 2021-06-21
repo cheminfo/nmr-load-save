@@ -1,4 +1,5 @@
-import { Spectrum1D } from '../../../../types/Spectra/Spectrum1D';
+import type { Spectrum1D } from 'cheminfo-types';
+
 import { mapRanges } from '../mapRanges';
 
 interface ComputeFromTo {

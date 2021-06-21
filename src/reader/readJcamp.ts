@@ -1,10 +1,11 @@
 import fetch from 'cross-fetch';
 import { fromJCAMP } from 'nmr-parser';
 
-import { JcampParsingOptions } from '../../types/Options/JcampParsingOptions';
-import { Output } from '../../types/Output';
+import type { JcampParsingOptions } from '../../types/Options/JcampParsingOptions';
+import type { Output } from '../../types/Output';
 import { formatSpectra } from '../utilities/formatSpectra';
 import generateID from '../utilities/generateID';
+
 
 type Text = string | ArrayBuffer;
 export function readJcamp(text: Text, options: JcampParsingOptions = {}): Output {

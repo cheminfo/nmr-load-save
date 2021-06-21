@@ -1,7 +1,6 @@
+import type { Data1D, Data2D } from 'cheminfo-types';
 import { fromJEOL } from 'nmr-parser';
 
-import { Data1D } from '../../types/Data1D';
-import { Data2D } from '../../types/Data2D';
 import { Options } from '../../types/Options/Options';
 import { formatSpectra } from '../utilities/formatSpectra';
 

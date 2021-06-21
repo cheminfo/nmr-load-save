@@ -1,17 +1,19 @@
+import type { Spectrum1D, Spectrum2D } from 'cheminfo-types';
 import type JSZipType from 'jszip';
 
-import { Spectra } from '../../../../types/Spectra/Spectra';
-import { Options } from '../../../../types/utilities/writeNmreData/Options';
+import { AditionalInputForGetSignal } from '../../../../types/utilities/writeNmreData/AditionalInputForGetSignal';
 import { isSpectrum2D } from '../isSpectrum2D';
 
 import { addSource } from './addSource';
 import { checkSpectrum } from './checkSpectrum';
 import { getToFix } from './getToFix';
 
+type Spectra = Array<Spectrum1D | Spectrum2D>;
+
 export async function get1DSignals(
   data: Spectra,
   nmrRecord: JSZipType,
-  options: Options,
+  options: AditionalInputForGetSignal,
 ) {
   let { prefix = '', labels } = options;
   let str = '';

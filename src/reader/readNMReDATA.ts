@@ -2,16 +2,17 @@ import Jszip from 'jszip';
 import type { JSZipObject } from 'jszip';
 import { NmrRecord, parseSDF } from 'nmredata';
 
-import { LoadedFiles } from '../../types/LoadedFiles';
-import { NmredataParsingOptions } from '../../types/Options/NmredataParsingOptions';
-import { Output } from '../../types/Output';
-import { Source } from '../../types/Source';
+import type { LoadedFiles } from '../../types/LoadedFiles';
+import type { NmredataParsingOptions } from '../../types/Options/NmredataParsingOptions';
+import type { Output } from '../../types/Output';
+import type { Source } from '../../types/Source';
 import { isSpectrum2D } from '../utilities/tools/isSpectrum2D';
 import { addRanges } from '../utilities/tools/nmredata/addRanges';
 import { addZones } from '../utilities/tools/nmredata/addZones';
 
 import { readBrukerZip } from './readBrukerZip';
 import { readJcamp, readJcampFromURL } from './readJcamp';
+
 
 interface ZipFiles {
   [key: string]: JSZipObject;

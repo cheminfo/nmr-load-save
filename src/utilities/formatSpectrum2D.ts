@@ -36,23 +36,6 @@ export function formatSpectrum2D(spectrumData: any): Spectrum2D {
     ...info,
   };
 
-  spectrum.originalInfo = spectrum.info;
-
-  spectrum.display = Object.assign(
-    {
-      name: spectrumData.display?.name
-        ? spectrumData.display.name
-        : generateID(),
-      positiveColor: 'red',
-      negativeColor: 'blue',
-      isPositiveVisible: true,
-      isNegativeVisible: true,
-      isVisible: true,
-      dimension: 2,
-    },
-    spectrumData.display,
-  );
-
   let { data = dependentVariables[0].components } = spectrumData;
 
   spectrum.data = {
@@ -65,7 +48,6 @@ export function formatSpectrum2D(spectrumData: any): Spectrum2D {
     },
     ...data,
   };
-  spectrum.originalData = spectrum.data;
 
   spectrum.zones = { ...{ values: [], options: {} }, ...zones };
 

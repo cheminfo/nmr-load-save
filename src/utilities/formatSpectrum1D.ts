@@ -56,20 +56,6 @@ export function formatSpectrum1D(spectrumData: any): Spectrum1D {
     ...info,
   };
 
-  spectrum.display = Object.assign(
-    {
-      name: spectrumData.display?.name ? spectrumData.display.name : id,
-      color: 'black',
-      isVisible: true,
-      isPeaksMarkersVisible: true,
-      isRealSpectrumVisible: true,
-      isVisibleInDomain: true,
-    },
-    spectrumData.display,
-  )
-
-  spectrum.originalData = spectrum.data;
-
   spectrum.peaks = { ...{ values: [], options: {} }, ...peaks };
 
   spectrum.integrals = {

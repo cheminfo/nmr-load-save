@@ -2,6 +2,7 @@ import FS from 'fs';
 import { join } from 'path';
 
 import { Spectrum1D } from 'cheminfo-types';
+
 import { readZip } from '../readZip';
 
 describe('test myModule', () => {
